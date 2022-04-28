@@ -11,9 +11,6 @@ export default () => {
             <View>
                 <Text style={styles.itemTitle}> API Call </Text>
             </View>
-
-
-
         </TouchableOpacity>
       </View>
     );
