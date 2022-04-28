@@ -12,11 +12,6 @@ export default () => {
                 <Text style={styles.itemTitle}> API Call </Text>
             </View>
 
-            <View>
-                <TouchableOpacity onPress={ () => {} }>
-                    <Ionicons name="options-outline" size={24} color="white"/>
-                </TouchableOpacity>
-            </View>
 
 
         </TouchableOpacity>
@@ -28,20 +23,20 @@ export default () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#fff",
+        backgroundColor: "#57687C",
     },
     itemTitle: { fontSize: 24, padding: 5, color: "white" },
     itemContainer: {
         flexDirection: "row",
-        justifyContent: "space-between",
+        justifyContent: "center",
         alignItems: "center",
         height: 100,
-        flex: 1,
+        flex: 0.5,
         borderRadius: 20,
         marginHorizontal: 20,
-        marginVertical: 10,
+        marginVertical: 200,
         padding: 15,
-        backgroundColor: Colors.blue,
+        backgroundColor: Colors.blueGray,
     },
     icon: {
         padding: 5,
