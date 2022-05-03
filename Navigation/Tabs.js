@@ -2,6 +2,7 @@
 //import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
 import Home from "../Screens/Home";
+import CreateActivity from "../Screens/CreateActivity";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -14,7 +15,7 @@ const Tabs = () => {
             barStyle={{ backgroundcolor: "#694fad" }}
             activeColor="#f0edf6"
             inactiveColor="#3e2465"
-            >
+        >
 
             <Tab.Screen name="Home" component={Home} 
             options={{
@@ -24,7 +25,7 @@ const Tabs = () => {
             }}
             />
 
-        <Tab.Screen name="Test" component={Home} 
+        <Tab.Screen name="Test" component={CreateActivity} 
             options={{
                 tabBarIcon : ({ color, size}) => (
                     <MaterialCommunityIcons name="magnify" color={color} size={26}/>
@@ -33,22 +34,6 @@ const Tabs = () => {
             />
         </Tab.Navigator>
     );
-}
-
-
-const screenOptions = (route, color) => {
-    let iconName;
-
-    switch(route.name){
-        case "Home":
-            iconName = "home";
-            break;
-        case "Test":
-            iconName = "folder1";
-            break;
-    }
-
-    return <Icon name={iconName} color={color} size={24}/>;
 }
 
 
