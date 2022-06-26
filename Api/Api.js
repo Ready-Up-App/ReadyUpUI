@@ -1,19 +1,20 @@
 import React from "react";
 
 
-export const root = "https://catfact.ninja/";
+export const root = "";
 
 export const getApiCall = (url) => {
     let response;
-    fetch(root + url,
+    fetch(url,
         {
-            "method": "GET"
+            "method": "GET",
+            "mode": "no-cors"
         }
     ).then( 
-        response => response.json()
+        //response => JSON.parse(response._bodyText)
     ).then(
         
-        response => console.log(response.fact)
+        response => {console.log(response)}
         
     ).catch( 
         err=> {console.log(err)}
