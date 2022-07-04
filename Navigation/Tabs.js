@@ -5,6 +5,7 @@ import Home from "../Screens/Home";
 import CreateActivity from "../Screens/CreateActivity";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import SignIn from "../Screens/SignIn";
 
 const Tab = createMaterialBottomTabNavigator();
 
@@ -25,7 +26,7 @@ const Tabs = () => {
             }}
             />
 
-        <Tab.Screen name="Test" component={CreateActivity} 
+        <Tab.Screen name="Test" component={SignIn} 
             options={{
                 tabBarIcon : ({ color, size}) => (
                     <MaterialCommunityIcons name="magnify" color={color} size={26}/>

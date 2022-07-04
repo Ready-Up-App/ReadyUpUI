@@ -7,7 +7,7 @@ import { getApiCall } from "../Api/Api";
 export default () => {
     return(
       <View style={styles.container}>
-        <TouchableOpacity onPress={ () => getApiCall("https://localhost:5001/items") } style={styles.itemContainer}>
+        <TouchableOpacity onPress={ () => getApiCall("items") } style={styles.itemContainer}>
             <View>
                 <Text style={styles.itemTitle}> API Call </Text>
             </View>

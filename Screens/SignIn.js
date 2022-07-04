@@ -11,7 +11,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import Colors from "../Constants/Colors";
-import { signInCall } from "../Api/Api"; 
+import { getApiCall, signInCall } from "../Api/Api"; 
 
 export default function SignIn() {
   const [username, setUsername] = useState("");
@@ -46,7 +46,7 @@ export default function SignIn() {
  
       <TouchableOpacity 
         style={styles.loginBtn}
-        onPress={ () => signInCall(username, password) }
+        onPress={ () => getApiCall("items") }
       >
         <Text style={styles.loginText}>LOGIN</Text>
       </TouchableOpacity>
