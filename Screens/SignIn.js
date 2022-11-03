@@ -30,7 +30,7 @@ export default class SignIn extends Authentication {
       this.setState({ConfirmPassword: confirmedPassword})
   }
 
-  signUp=()=>{
+  signUp(){
       signUpCall(this.state.Username, this.state.Password, this.state.Email);
   }
 
@@ -51,7 +51,7 @@ export default class SignIn extends Authentication {
               />
 
               <Button
-                  onPress={this.signUp()}
+                  // onPress={this.signUp()}
               ></Button>
           </SafeAreaView>
       );

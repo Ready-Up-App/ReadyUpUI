@@ -2,21 +2,16 @@ import { Button, StyleSheet, TouchableOpacity } from "react-native";
 import React ,{ Component } from "react";
 import { View, Text, TextInput } from "react-native";
 import { SafeAreaView } from "react-native-web";
-import { signInCall } from "../Api/Api";
+import { getApiCall, signInCall } from "../Api/Api";
 import Colors from "../Constants/Colors";
 
 
 
 export default class Authentication extends Component {
-    state = {
-        Email: "",
-        Username: "",
-        Password: ""
-    }
 
-    constructor() {
-        super();
-        this.setState = {
+    constructor(props) {
+        super(props);
+        this.state = {
             Email: "",
             Username: "",
             Password: ""
@@ -35,8 +30,9 @@ export default class Authentication extends Component {
         this.setState({Password: pword})
     }
 
-    signIn=()=>{
-        signInCall(this.state.Email, this.state.Username, this.state.Password);
+    signIn(){
+        signInCall(this.state.Email, this.state.Password);
+        // getApiCall("items");
     }
 
     render() {
@@ -71,7 +67,7 @@ export default class Authentication extends Component {
 
                     <TouchableOpacity
                         style={styles.button}
-                        onPress={this.signIn()}
+                        onPress={() => this.signIn()}
                     >
                         <Text style={styles.itemTitle}>
                             Login

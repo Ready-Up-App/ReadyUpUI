@@ -1,7 +1,7 @@
 import React from "react";
 
 
-export const root = "https://localhost:5001/";
+export const root = "https://localhost:5001/api/";
 export const signIn = "signIn";
 export const signUp = "signUp";
 
@@ -24,7 +24,7 @@ export const getApiCall = (url) => {
 
 }
 
-export const signInCall = (username, password) => {
+export const signInCall = (email, password) => {
     let response;
 
     //check if already signed in!!
@@ -35,16 +35,12 @@ export const signInCall = (username, password) => {
                 Accept: "application/json",
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({
-                Username: username,
+            body: {
+                Email: email,
                 Password: password
-            })
+            }
         }
     ).then((response) => response.json()
-    ).then(
-        
-        (json) => {return data.id}
-        
     ).catch((err) => {
         console.error(err)
     });
