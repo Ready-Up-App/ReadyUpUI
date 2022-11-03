@@ -11,48 +11,93 @@ import {
   TouchableOpacity,
 } from "react-native";
 import Colors from "../Constants/Colors";
-import { getApiCall, signInCall } from "../Api/Api"; 
+import { getApiCall, signInCall, signUpCall } from "../Api/Api"; 
+import Authentication from "./Authentication";
 
-export default function SignIn() {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
- 
-  return (
-    <View style={styles.container}>
- 
-      <StatusBar style="auto" />
-      <View style={styles.inputView}>
-        <TextInput
-          style={styles.TextInput}
-          placeholder="Username"
-          placeholderTextColor={"white"}
-          onChangeText={(username) => setUsername(username)}
-        />
-      </View>
- 
-      <View style={styles.inputView}>
-        <TextInput
-          style={styles.TextInput}
-          placeholder="Password"
-          placeholderTextColor={"white"}
-          secureTextEntry={true}
-          onChangeText={(password) => setPassword(password)}
-        />
-      </View>
- 
-      <TouchableOpacity>
-        <Text style={styles.forgot_button}>Forgot Password?</Text>
-      </TouchableOpacity>
- 
-      <TouchableOpacity 
-        style={styles.loginBtn}
-        onPress={ () => getApiCall("items") }
-      >
-        <Text style={styles.loginText}>LOGIN</Text>
-      </TouchableOpacity>
-    </View>
-  );
+export default class SignIn extends Authentication {
+  state = {
+      ConfirmPassword: ""
+  }
+
+  constructor() {
+      super();
+      this.setState={
+        ConfirmPassword: ""
+      }
+  }
+
+  setConfirmPassword=(confirmedPassword)=>{
+      this.setState({ConfirmPassword: confirmedPassword})
+  }
+
+  signUp=()=>{
+      signUpCall(this.state.Username, this.state.Password, this.state.Email);
+  }
+
+  render() {
+      return (
+          <SafeAreaView style={styles.authentication}>
+              <TextInput 
+                  style={styles.input}
+                  onChangeText={(text) => this.setUsername(text)}
+                  value={this.state.Username}
+                  placeholder="Username"
+              />
+              <TextInput 
+                  style={styles.input}
+                  onChangeText={(text) => this.setPassword(text)}
+                  value={this.state.Password}
+                  placeholder="Password"
+              />
+
+              <Button
+                  onPress={this.signUp()}
+              ></Button>
+          </SafeAreaView>
+      );
+  }
 }
+
+// export default function SignIn() {
+//   const [username, setUsername] = useState("");
+//   const [password, setPassword] = useState("");
+ 
+//   return (
+//     <View style={styles.container}>
+ 
+//       <StatusBar style="auto" />
+//       <View style={styles.inputView}>
+//         <TextInput
+//           style={styles.TextInput}
+//           placeholder="Username"
+//           placeholderTextColor={"white"}
+//           onChangeText={(username) => setUsername(username)}
+//         />
+//       </View>
+ 
+//       <View style={styles.inputView}>
+//         <TextInput
+//           style={styles.TextInput}
+//           placeholder="Password"
+//           placeholderTextColor={"white"}
+//           secureTextEntry={true}
+//           onChangeText={(password) => setPassword(password)}
+//         />
+//       </View>
+ 
+//       <TouchableOpacity>
+//         <Text style={styles.forgot_button}>Forgot Password?</Text>
+//       </TouchableOpacity>
+ 
+//       <TouchableOpacity 
+//         style={styles.loginBtn}
+//         onPress={ () => getApiCall("items") }
+//       >
+//         <Text style={styles.loginText}>LOGIN</Text>
+//       </TouchableOpacity>
+//     </View>
+//   );
+// }
  
 const styles = StyleSheet.create({
   container: {

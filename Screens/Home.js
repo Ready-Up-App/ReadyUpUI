@@ -1,19 +1,22 @@
-import React from "react";
+import React, { Component } from "react";
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import Colors from "../Constants/Colors";
 import { Ionicons } from "@expo/vector-icons";
 import { getApiCall } from "../Api/Api";
 
-export default () => {
-    return(
-      <View style={styles.container}>
-        <TouchableOpacity onPress={ () => getApiCall("items") } style={styles.itemContainer}>
-            <View>
-                <Text style={styles.itemTitle}> API Call </Text>
-            </View>
-        </TouchableOpacity>
-      </View>
-    );
+export class Home extends Component {
+    render() {
+        return(
+        <View style={styles.container}>
+            <TouchableOpacity onPress={ () => getApiCall("items") } style={styles.itemContainer}>
+                <View>
+                    <Text style={styles.itemTitle}> API Call </Text>
+                </View>
+            </TouchableOpacity>
+        </View>
+        );
+    }
+
 }
 
 
