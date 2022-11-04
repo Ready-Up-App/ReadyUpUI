@@ -13,18 +13,14 @@ export default class Authentication extends Component {
         super(props);
         this.state = {
             Email: "",
-            Username: "",
             Password: ""
         }
     }
 
-    setPassword=(email)=>{
+    setEmail=(email)=>{
         this.setState({Email: email})
     }
 
-    setUsername=(uname)=>{
-        this.setState({Username: uname})
-    }
 
     setPassword=(pword)=>{
         this.setState({Password: pword})
@@ -52,16 +48,16 @@ export default class Authentication extends Component {
                 </SafeAreaView>
 
                 <SafeAreaView style={styles.signInContainer}>
-                    <TextInput 
+                    <TextInput
                         style={styles.input}
-                        onChangeText={(text) => this.setUsername(text)}
-                        value={this.state.Username}
-                        placeholder="Username"
+                        onChangeText={(text) => this.setEmail(text)}
+                        // value={this.state.Email}
+                        placeholder="Email"
                     />
                     <TextInput 
                         style={styles.input}
                         onChangeText={(text) => this.setPassword(text)}
-                        value={this.state.Password}
+                        // value={this.state.Password}
                         placeholder="Password"
                     />
 
@@ -90,7 +86,7 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.green,
     },
     input: {
-        height: "50%",
+        height: "1%",
         width: "50%",
         margin: "5%",
         borderWidth: 1,
