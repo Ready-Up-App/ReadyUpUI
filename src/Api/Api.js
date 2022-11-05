@@ -2,29 +2,11 @@ const root = "https://localhost:5001/api/";
 const signIn = "signIn";
 const signUp = "signUp";
 
-export const getApiCall = (url) => {
-    let response;
-    fetch(root + url,
-        {
-            "method": "GET",
-            "mode": "no-cors"
-        }
-    ).then(
-        //response => JSON.parse(response._bodyText)
-    ).then(
-
-        response => { console.log(response) }
-
-    ).catch((err) => {
-        console.error(err)
-    });
-}
-
-export const signInCall = (email, password) => {
+export const signInCall = async (email, password) => {
     let response;
 
     //check if already signed in!!
-    fetch(root + signIn,
+    return await fetch(root + signIn,
         {
             method: "POST",
             headers: {
@@ -36,17 +18,17 @@ export const signInCall = (email, password) => {
                 Password: password
             })
         }
-    ).then((response) => response.json()
+    ).then(response => response.json()
     ).catch((err) => {
         console.error(err)
     });
 }
 
-export const signUpCall = (username, password, email) => {
+export const signUpCall = async (username, password, email) => {
     let response;
 
     //check if already signed up!!
-    fetch(root + signUp,
+    return await fetch(root + signUp,
         {
             method: "POST",
             headers: {

@@ -1,26 +1,36 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import { Text, StyleSheet, Pressable } from "react-native";
 
 import Colors from "../../Constants/Colors";
 
-const CustomButton = ({ onPress, text }) => {
+const CustomButton = ({ onPress, text, color, padding }) => {
+
+    function hasCustomStyles() {
+        return (typeof(color) !== "undefined" || typeof(padding) !== "undefined");
+    }
 
     return (
-        <Pressable onPress={onPress} style={styles.container}>
+        <Pressable
+            onPress={onPress}
+            style={styles(color, padding).container}
+        >
             <Text style={styles.text}>{text}</Text>
         </Pressable>
     );
 }
 
-const styles = StyleSheet.create({
+const defaultColor = Colors.blue;
+const defaultPadding = 15;
+
+const styles = (color, padding) => StyleSheet.create({
     container: {
-        backgroundColor: Colors.green,
+        backgroundColor: color ? color : defaultColor,
 
         width: "100%",
 
-        padding: 15,
-        marginVertical: 15,
+        padding: padding ? padding : defaultPadding,
+        marginVertical: 25,
 
         alignItems: "center",
         borderRadius: 50

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, Image, useWindowDimensions } from "react-native";
 
 import CustomInput from "../../Components/CustomInput";
 import CustomButton from "../../Components/CustomButton/CustomButton";
@@ -7,13 +7,17 @@ import CustomButton from "../../Components/CustomButton/CustomButton";
 import { signUpCall } from "../../Api/Api";
 import Colors from "../../Constants/Colors";
 
-const SignUpScreen = () => {
+import Logo from "../../../assets/regularIcon.png";
+
+const SignUpScreen = ({ navigation }) => {
 
     const [email, setEmail] = useState("");
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
 
     const [errors, setErrors] = useState({});
+
+    const {height} = useWindowDimensions();
 
     const onSignUpPressed = () => {
         if (validate()) {
@@ -47,6 +51,12 @@ const SignUpScreen = () => {
 
     return (
         <View style={styles.root}>
+            <Image source={Logo} style={[styles.logo, { height: height * 0.3 }]} resizeMode="contain" />
+
+            <CustomButton
+                text="Returning User"
+                onPress={() => navigation.navigate("SignIn")}
+            />
 
             <CustomInput
                 value={username}
@@ -84,6 +94,16 @@ const styles = StyleSheet.create({
     root: {
         alignItems: "center",
         padding: 20,
+        backgroundColor: Colors.blueGray,
+        flex: 1,
+        justifyContent: "center",
+    },
+    logo: {
+        width: "70%",
+        maxHeight: 125,
+        maxWidth: 125,
+        marginTop: 30,
+        marginBottom: 200,
     },
 });
 
