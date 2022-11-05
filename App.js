@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet,  View } from "react-native"
+import { SafeAreaView, StyleSheet,  View } from "react-native"
 import Colors from './src/Constants/Colors';
 import SignInScreen from './src/Screens/SignInScreen/SignInScreen';
 import SignUpScreen from './src/Screens/SignUpScreen/SignUpScreen';
@@ -11,10 +11,10 @@ const App = () => {
         //if (SignIn!= saved and session != saved ), go straight to main app navigation
         //else, go to signin screen
 
-        <View style={styles.root}>
+        <SafeAreaView style={styles.root}>
             <SignInScreen />
             <SignUpScreen />
-        </View>
+        </SafeAreaView>
     );
 }
 

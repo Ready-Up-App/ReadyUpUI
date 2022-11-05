@@ -1,15 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
 
 import { View, TextInput, StyleSheet } from "react-native";
 
 import Colors from "../../Constants/Colors";
 
-const CustomInput = ({ value, setValue, placeholder, secureTextEntry }) => {
+const CustomInput = ({ value, setValue, placeholder, secureTextEntry, placeholderTextColor }) => {
+    
     return (
         <View style={styles.container}>
             <TextInput
                 value={value}
                 placeholder={placeholder}
+                placeholderTextColor={placeholderTextColor}
                 style={styles.input}
                 onChangeText={setValue}
                 secureTextEntry={secureTextEntry}
@@ -31,7 +33,8 @@ const styles = StyleSheet.create({
         marginVertical: 5,
     },
     input: {
-        marginHorizontal: 5,
+        textAlign: "center",
+        // marginHorizontal: 5,
     },
 });
 

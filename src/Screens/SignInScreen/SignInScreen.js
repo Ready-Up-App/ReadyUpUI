@@ -43,12 +43,14 @@ const SignInScreen = () => {
                 value={email}
                 setValue={setEmail}
                 placeholder="Email"
+                placeholderTextColor="black"
             />
 
             <CustomInput
                 value={password}
                 setValue={setPassword}
                 placeholder="Password"
+                placeholderTextColor="black"
                 secureTextEntry={true}
             />
 

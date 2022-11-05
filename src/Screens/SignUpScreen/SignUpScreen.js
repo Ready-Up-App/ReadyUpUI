@@ -5,6 +5,7 @@ import CustomInput from "../../Components/CustomInput";
 import CustomButton from "../../Components/CustomButton/CustomButton";
 
 import { signUpCall } from "../../Api/Api";
+import Colors from "../../Constants/Colors";
 
 const SignUpScreen = () => {
 
@@ -51,12 +52,14 @@ const SignUpScreen = () => {
                 value={username}
                 setValue={setUsername}
                 placeholder="Username"
+                placeholderTextColor="black"
             />
 
             <CustomInput
                 value={email}
                 setValue={setEmail}
                 placeholder="Email"
+                placeholderTextColor="black"
             />
 
             <CustomInput
@@ -64,6 +67,7 @@ const SignUpScreen = () => {
                 setValue={setPassword}
                 placeholder="Password"
                 secureTextEntry={true}
+                placeholderTextColor="black"
             />
 
             <CustomButton
