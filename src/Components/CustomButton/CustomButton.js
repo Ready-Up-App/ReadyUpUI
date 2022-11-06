@@ -4,32 +4,25 @@ import { Text, StyleSheet, Pressable } from "react-native";
 
 import Colors from "../../Constants/Colors";
 
-const CustomButton = ({ onPress, text, color, padding }) => {
-
-    function hasCustomStyles() {
-        return (typeof(color) !== "undefined" || typeof(padding) !== "undefined");
-    }
+const CustomButton = ({ onPress, text, style }) => {
 
     return (
         <Pressable
             onPress={onPress}
-            style={styles(color, padding).container}
+            style={[styles.container, style]}
         >
             <Text style={styles.text}>{text}</Text>
         </Pressable>
     );
 }
 
-const defaultColor = Colors.blue;
-const defaultPadding = 15;
-
-const styles = (color, padding) => StyleSheet.create({
+const styles = StyleSheet.create({
     container: {
-        backgroundColor: color ? color : defaultColor,
+        backgroundColor: Colors.blue,
 
         width: "100%",
 
-        padding: padding ? padding : defaultPadding,
+        padding: 15,
         marginVertical: 25,
 
         alignItems: "center",

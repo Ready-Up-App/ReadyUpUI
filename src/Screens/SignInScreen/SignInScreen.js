@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, StyleSheet, Image, useWindowDimensions, KeyboardAvoidingView } from "react-native";
+import { View, StyleSheet, Image, useWindowDimensions, Text } from "react-native";
 
 import CustomInput from "../../Components/CustomInput";
 import CustomButton from "../../Components/CustomButton/CustomButton";
@@ -10,15 +10,19 @@ import { signInCall } from "../../Api/Api";
 import { useLogin } from "../../AppContext/LoginProvider";
 
 import Logo from "../../../assets/regularIcon.png";
+import LoginNav from "../../Components/LoginNav";
 
 const SignInScreen = ({ navigation }) => {
 
     const { setIsLoggedIn } = useLogin();
 
+
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
     const [errors, setErrors] = useState({});
+
+    const [isFocused, setIsFocused] = useState({signIn: navigation.isFocused(), signUp: !navigation.isFocused()});
 
     const { height } = useWindowDimensions();
 
@@ -55,17 +59,13 @@ const SignInScreen = ({ navigation }) => {
     }
 
     return (
-        <KeyboardAvoidingView style={styles.root}
-            behavior={Platform.OS === "ios" ? "padding" : "height"}
-        >
+        <View style={[styles.root, { paddingBottom: height * 0.2 }]}>
 
-            <Image source={Logo} style={[styles.logo, { height: height * 0.3 }]} resizeMode="contain" />
-            <CustomButton
-                text="New User?"
-                onPress={() => navigation.navigate("SignUp")}
-                padding={5}
-            />
+            {/* fix logo positioning/margin/padding */}
+            <Image source={Logo} style={[styles.logo, { height: height * 0.3, marginBottom: height * 0.15 }]} />
 
+            <LoginNav navigation={navigation} focus={isFocused}/>
+            
             <CustomInput
                 value={email}
                 setValue={setEmail}
@@ -84,19 +84,26 @@ const SignInScreen = ({ navigation }) => {
             <CustomButton
                 text="Sign In"
                 onPress={onSignInPressed}
-                color={Colors.green}
+                style={{ backgroundColor: Colors.green }}
             />
 
-        </KeyboardAvoidingView>
+        </View>
     );
 }
 
 const styles = StyleSheet.create({
     root: {
         alignItems: "center",
-        padding: 20,
+        paddingBottom: 50,
+        paddingHorizontal: 20,
         backgroundColor: Colors.blueGray,
         flex: 1,
+        justifyContent: "flex-end",
+    },
+    form: {
+        alignItems: "center",
+        padding: 20,
+        // flex: 1,
         justifyContent: "center",
     },
     logo: {

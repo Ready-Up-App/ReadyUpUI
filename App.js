@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { StyleSheet } from "react-native"
+import { StyleSheet, View } from "react-native"
 import { NavigationContainer } from '@react-navigation/native';
 
 import Colors from './src/Constants/Colors';
@@ -22,7 +22,7 @@ const App = () => {
 const styles = StyleSheet.create({
     root: {
         flex: 1,
-        backgroundColor: Colors.blueGray,
+        backgroundColor: Colors.pink,
     },
 });
 

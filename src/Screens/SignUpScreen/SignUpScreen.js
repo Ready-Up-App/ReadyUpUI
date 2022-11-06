@@ -8,14 +8,19 @@ import { signUpCall } from "../../Api/Api";
 import Colors from "../../Constants/Colors";
 
 import Logo from "../../../assets/regularIcon.png";
+import LoginNav from "../../Components/LoginNav";
 
 const SignUpScreen = ({ navigation }) => {
+
+    const [isActive, setIsActive] = useState()
 
     const [email, setEmail] = useState("");
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
 
     const [errors, setErrors] = useState({});
+
+    const [isFocused, setIsFocused] = useState({signUp: navigation.isFocused(), signIn: !navigation.isFocused()});
 
     const {height} = useWindowDimensions();
 
@@ -55,10 +60,7 @@ const SignUpScreen = ({ navigation }) => {
         >
             <Image source={Logo} style={[styles.logo, { height: height * 0.3 }]} resizeMode="contain" />
 
-            <CustomButton
-                text="Returning User"
-                onPress={() => navigation.navigate("SignIn")}
-            />
+            <LoginNav navigation={navigation} focus={isFocused}/>
 
             <CustomInput
                 value={username}
