@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, StyleSheet, Image, useWindowDimensions } from "react-native";
+import { View, StyleSheet, Image, useWindowDimensions, KeyboardAvoidingView, Platform } from "react-native";
 
 import CustomInput from "../../Components/CustomInput";
 import CustomButton from "../../Components/CustomButton/CustomButton";
@@ -50,7 +50,9 @@ const SignUpScreen = ({ navigation }) => {
     }
 
     return (
-        <View style={styles.root}>
+        <KeyboardAvoidingView style={styles.root}
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
+        >
             <Image source={Logo} style={[styles.logo, { height: height * 0.3 }]} resizeMode="contain" />
 
             <CustomButton
@@ -85,7 +87,7 @@ const SignUpScreen = ({ navigation }) => {
                 onPress={onSignUpPressed}
             />
 
-        </View>
+        </KeyboardAvoidingView>
     )
 }
 
