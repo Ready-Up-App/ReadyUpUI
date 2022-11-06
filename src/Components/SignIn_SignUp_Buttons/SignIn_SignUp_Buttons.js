@@ -6,7 +6,7 @@ import CustomButton from "../CustomButton/CustomButton";
 
 import Colors from "../../Constants/Colors";
 
-const LoginNav = ({ navigation, focus }) => {
+const SignIn_SignUp_Buttons = ({ navigation, focus }) => {
 
     function signIn() {
         if(focus.signUp){
@@ -48,4 +48,4 @@ const styles = StyleSheet.create({
     },
 })
 
-export default LoginNav;
+export default SignIn_SignUp_Buttons;

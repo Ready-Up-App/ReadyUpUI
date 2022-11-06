@@ -1,6 +1,6 @@
-import React, { useContext } from "react";
+import React from "react";
 
-import { createStackNavigator } from "@react-navigation/stack";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 import GroupsScreen from "../Screens/GroupsScreen";
 import SignInScreen from "../Screens/SignInScreen/SignInScreen";
@@ -8,8 +8,8 @@ import SignUpScreen from "../Screens/SignUpScreen/SignUpScreen";
 
 import { useLogin } from "../AppContext/LoginProvider";
 
-const Stack = createStackNavigator();
-const AuthStack = createStackNavigator();
+const Stack = createNativeStackNavigator();
+const AuthStack = createNativeStackNavigator();
 
 const AppNavigation = () => {
     return (
@@ -21,7 +21,7 @@ const AppNavigation = () => {
 
 const SignInNavigation = () => {
     return (
-        <AuthStack.Navigator screenOptions={{ headerShown: false }}>
+        <AuthStack.Navigator screenOptions={{ headerShown: false }} initialRouteName="SignIn">
             <AuthStack.Screen component={SignInScreen} name="SignIn" />
             <AuthStack.Screen component={SignUpScreen} name="SignUp" />
         </AuthStack.Navigator>

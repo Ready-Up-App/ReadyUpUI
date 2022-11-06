@@ -8,11 +8,12 @@ import { signUpCall } from "../../Api/Api";
 import Colors from "../../Constants/Colors";
 
 import Logo from "../../../assets/regularIcon.png";
-import LoginNav from "../../Components/LoginNav";
+import SignIn_SignUp_Buttons from "../../Components/SignIn_SignUp_Buttons";
+import { useLogin } from "../../AppContext/LoginProvider";
 
 const SignUpScreen = ({ navigation }) => {
 
-    const [isActive, setIsActive] = useState()
+    const { setIsLoggedIn } = useLogin();
 
     const [email, setEmail] = useState("");
     const [username, setUsername] = useState("");
@@ -20,13 +21,19 @@ const SignUpScreen = ({ navigation }) => {
 
     const [errors, setErrors] = useState({});
 
-    const [isFocused, setIsFocused] = useState({signUp: navigation.isFocused(), signIn: !navigation.isFocused()});
+    const [isFocused] = useState({signUp: navigation.isFocused(), signIn: !navigation.isFocused()});
 
     const {height} = useWindowDimensions();
 
-    const onSignUpPressed = () => {
-        if (validate()) {
-            signUpCall(email, password);
+    const onSignUpPressed = async () => {
+        try {
+            const result = await signUpCall(email, password);
+            if (validate()) {
+                setIsLoggedIn(true);
+            }
+            
+        } catch (error) {
+            console.log(error)
         }
     }
 
@@ -60,7 +67,7 @@ const SignUpScreen = ({ navigation }) => {
         >
             <Image source={Logo} style={[styles.logo, { height: height * 0.3 }]} resizeMode="contain" />
 
-            <LoginNav navigation={navigation} focus={isFocused}/>
+            <SignIn_SignUp_Buttons navigation={navigation} focus={isFocused}/>
 
             <CustomInput
                 value={username}
@@ -87,6 +94,7 @@ const SignUpScreen = ({ navigation }) => {
             <CustomButton
                 text="Sign Up"
                 onPress={onSignUpPressed}
+                style={{ backgroundColor: Colors.green }}
             />
 
         </KeyboardAvoidingView>

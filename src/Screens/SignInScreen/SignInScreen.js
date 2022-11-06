@@ -10,7 +10,7 @@ import { signInCall } from "../../Api/Api";
 import { useLogin } from "../../AppContext/LoginProvider";
 
 import Logo from "../../../assets/regularIcon.png";
-import LoginNav from "../../Components/LoginNav";
+import SignIn_SignUp_Buttons from "../../Components/SignIn_SignUp_Buttons/SignIn_SignUp_Buttons";
 
 const SignInScreen = ({ navigation }) => {
 
@@ -22,7 +22,7 @@ const SignInScreen = ({ navigation }) => {
 
     const [errors, setErrors] = useState({});
 
-    const [isFocused, setIsFocused] = useState({signIn: navigation.isFocused(), signUp: !navigation.isFocused()});
+    const [isFocused] = useState({signIn: navigation.isFocused(), signUp: !navigation.isFocused()});
 
     const { height } = useWindowDimensions();
 
@@ -64,7 +64,7 @@ const SignInScreen = ({ navigation }) => {
             {/* fix logo positioning/margin/padding */}
             <Image source={Logo} style={[styles.logo, { height: height * 0.3, marginBottom: height * 0.15 }]} />
 
-            <LoginNav navigation={navigation} focus={isFocused}/>
+            <SignIn_SignUp_Buttons navigation={navigation} focus={isFocused}/>
             
             <CustomInput
                 value={email}
