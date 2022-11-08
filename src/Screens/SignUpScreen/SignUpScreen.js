@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, Image, useWindowDimensions, KeyboardAvoidingView, Platform } from "react-native";
 
 import CustomInput from "../../Components/CustomInput";
 import CustomButton from "../../Components/CustomButton/CustomButton";
@@ -7,7 +7,13 @@ import CustomButton from "../../Components/CustomButton/CustomButton";
 import { signUpCall } from "../../Api/Api";
 import Colors from "../../Constants/Colors";
 
-const SignUpScreen = () => {
+import Logo from "../../../assets/regularIcon.png";
+import SignIn_SignUp_Buttons from "../../Components/SignIn_SignUp_Buttons";
+import { useLogin } from "../../AppContext/LoginProvider";
+
+const SignUpScreen = ({ navigation }) => {
+
+    const { setIsLoggedIn } = useLogin();
 
     const [email, setEmail] = useState("");
     const [username, setUsername] = useState("");
@@ -15,9 +21,19 @@ const SignUpScreen = () => {
 
     const [errors, setErrors] = useState({});
 
-    const onSignUpPressed = () => {
-        if (validate()) {
-            signUpCall(email, password);
+    const [isFocused] = useState({signUp: navigation.isFocused(), signIn: !navigation.isFocused()});
+
+    const {height} = useWindowDimensions();
+
+    const onSignUpPressed = async () => {
+        try {
+            const result = await signUpCall({email, username, password});
+            if (validate() && result) {
+                setIsLoggedIn(true);
+            }
+            
+        } catch (error) {
+            console.log(error)
         }
     }
 
@@ -46,7 +62,12 @@ const SignUpScreen = () => {
     }
 
     return (
-        <View style={styles.root}>
+        <KeyboardAvoidingView style={styles.root}
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
+        >
+            <Image source={Logo} style={[styles.logo, { height: height * 0.3 }]} resizeMode="contain" />
+
+            <SignIn_SignUp_Buttons navigation={navigation} focus={isFocused}/>
 
             <CustomInput
                 value={username}
@@ -73,9 +94,10 @@ const SignUpScreen = () => {
             <CustomButton
                 text="Sign Up"
                 onPress={onSignUpPressed}
+                style={{ backgroundColor: Colors.green }}
             />
 
-        </View>
+        </KeyboardAvoidingView>
     )
 }
 
@@ -84,6 +106,16 @@ const styles = StyleSheet.create({
     root: {
         alignItems: "center",
         padding: 20,
+        backgroundColor: Colors.blueGray,
+        flex: 1,
+        justifyContent: "center",
+    },
+    logo: {
+        width: "70%",
+        maxHeight: 125,
+        maxWidth: 125,
+        marginTop: 30,
+        marginBottom: 200,
     },
 });
 
