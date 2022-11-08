@@ -27,8 +27,8 @@ const SignUpScreen = ({ navigation }) => {
 
     const onSignUpPressed = async () => {
         try {
-            const result = await signUpCall(email, password);
-            if (validate()) {
+            const result = await signUpCall({email, username, password});
+            if (validate() && result) {
                 setIsLoggedIn(true);
             }
             

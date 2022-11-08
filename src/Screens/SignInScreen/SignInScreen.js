@@ -29,11 +29,10 @@ const SignInScreen = ({ navigation }) => {
     const onSignInPressed = async () => {
         if (validate()) {
             try {
-                const result = await signInCall(email, password);
-                if (result.success) {
+                const result = await signInCall({email, password});
+                if (result.status == 200) {
                     setIsLoggedIn(true);
                 }
-
             } catch (error) {
                 console.log(error)
             }
