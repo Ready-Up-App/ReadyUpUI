@@ -10,6 +10,9 @@ import Colors from "../../Constants/Colors";
 import Logo from "../../../assets/regularIcon.png";
 import SignIn_SignUp_Buttons from "../../Components/SignIn_SignUp_Buttons";
 import { useLogin } from "../../AppContext/LoginProvider";
+import { ScrollView } from "react-native-web";
+
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const SignUpScreen = ({ navigation }) => {
 
@@ -62,53 +65,54 @@ const SignUpScreen = ({ navigation }) => {
     }
 
     return (
-        <KeyboardAvoidingView style={styles.root}
-            behavior={Platform.OS === "ios" ? "padding" : "height"}
-        >
-            <Image source={Logo} style={[styles.logo, { height: height * 0.3 }]} resizeMode="contain" />
+        <SafeAreaView>
+            <ScrollView style={styles.root}>
+            
+                <Image source={Logo} style={[styles.logo, { height: height * 0.3 }]} resizeMode="contain" />
 
-            <SignIn_SignUp_Buttons navigation={navigation} focus={isFocused}/>
+                <SignIn_SignUp_Buttons navigation={navigation} focus={isFocused}/>
 
-            <CustomInput
-                value={username}
-                setValue={setUsername}
-                placeholder="Username"
-                placeholderTextColor="black"
+                <CustomInput
+                    value={username}
+                    setValue={setUsername}
+                    placeholder="Username"
+                    placeholderTextColor="black"
+                />
+
+                <CustomInput
+                    value={email}
+                    setValue={setEmail}
+                    placeholder="Email"
+                    placeholderTextColor="black"
+                />
+
+                <CustomInput
+                    value={password}
+                    setValue={setPassword}
+                    placeholder="Password"
+                    secureTextEntry={true}
+                    placeholderTextColor="black"
+                />
+
+                <CustomButton
+                    text="Sign Up"
+                    onPress={onSignUpPressed}
+                    style={{ backgroundColor: Colors.green }}
             />
-
-            <CustomInput
-                value={email}
-                setValue={setEmail}
-                placeholder="Email"
-                placeholderTextColor="black"
-            />
-
-            <CustomInput
-                value={password}
-                setValue={setPassword}
-                placeholder="Password"
-                secureTextEntry={true}
-                placeholderTextColor="black"
-            />
-
-            <CustomButton
-                text="Sign Up"
-                onPress={onSignUpPressed}
-                style={{ backgroundColor: Colors.green }}
-            />
-
-        </KeyboardAvoidingView>
+            </ScrollView>
+        </SafeAreaView>
     )
 }
 
 
 const styles = StyleSheet.create({
     root: {
-        alignItems: "center",
-        padding: 20,
+        // alignItems: "center",
+        paddingBottom: 50,
+        paddingHorizontal: 20,
         backgroundColor: Colors.blueGray,
         flex: 1,
-        justifyContent: "center",
+        // justifyContent: "flex-end",
     },
     logo: {
         width: "70%",
