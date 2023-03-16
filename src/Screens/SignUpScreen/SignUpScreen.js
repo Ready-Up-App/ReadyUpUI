@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, StyleSheet, Image, useWindowDimensions, KeyboardAvoidingView, Platform } from "react-native";
+import { SafeAreaView, View, StyleSheet, Image, useWindowDimensions, KeyboardAvoidingView, Platform } from "react-native";
 
 import CustomInput from "../../Components/CustomInput";
 import CustomButton from "../../Components/CustomButton/CustomButton";
@@ -62,60 +62,75 @@ const SignUpScreen = ({ navigation }) => {
     }
 
     return (
-        <KeyboardAvoidingView style={styles.root}
-            behavior={Platform.OS === "ios" ? "padding" : "height"}
-        >
-            <Image source={Logo} style={[styles.logo, { height: height * 0.3 }]} resizeMode="contain" />
+        <SafeAreaView style={[styles.root, {height: height}]}>
+            
+            <KeyboardAvoidingView style={[styles.mainView, {height: height}]} 
+                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
 
-            <SignIn_SignUp_Buttons navigation={navigation} focus={isFocused}/>
+                <View style={styles.logoView}>
+                    <Image source={Logo} style={[styles.logo, {alignSelf: "center"}]} resizeMode="contain" />
+                </View>
 
-            <CustomInput
-                value={username}
-                setValue={setUsername}
-                placeholder="Username"
-                placeholderTextColor="black"
-            />
+                <View style={styles.inputView}>
+                    <SignIn_SignUp_Buttons navigation={navigation} focus={isFocused}/>
+                    <CustomInput
+                        value={username}
+                        setValue={setUsername}
+                        placeholder="Username"
+                        placeholderTextColor="black"
+                    />
+                    <CustomInput
+                        value={email}
+                        setValue={setEmail}
+                        placeholder="Email"
+                        placeholderTextColor="black"
+                    />
+                    <CustomInput
+                        value={password}
+                        setValue={setPassword}
+                        placeholder="Password"
+                        secureTextEntry={true}
+                        placeholderTextColor="black"
+                    />
+                    <CustomButton
+                        text="Sign Up"
+                        onPress={onSignUpPressed}
+                        style={{ backgroundColor: Colors.green }}
+                    />
+                </View>
 
-            <CustomInput
-                value={email}
-                setValue={setEmail}
-                placeholder="Email"
-                placeholderTextColor="black"
-            />
+                </KeyboardAvoidingView>
 
-            <CustomInput
-                value={password}
-                setValue={setPassword}
-                placeholder="Password"
-                secureTextEntry={true}
-                placeholderTextColor="black"
-            />
-
-            <CustomButton
-                text="Sign Up"
-                onPress={onSignUpPressed}
-                style={{ backgroundColor: Colors.green }}
-            />
-
-        </KeyboardAvoidingView>
+        </SafeAreaView>
     )
 }
 
-
 const styles = StyleSheet.create({
     root: {
-        alignItems: "center",
-        padding: 20,
         backgroundColor: Colors.blueGray,
         flex: 1,
+    }, 
+    mainView: {
+        justifyContent: "row",
+        alignItems: "center",
+
+    },
+    inputView: {
+        flex:2,
+        justifyContent: "flex-start",
+        width: "75%",
+    },
+    logoView: {
+        flex:1,
+        width: "100%",
         justifyContent: "center",
+        flexDirection: "row"
     },
     logo: {
-        width: "70%",
+        width: 125,
+        height: 125,
         maxHeight: 125,
         maxWidth: 125,
-        marginTop: 30,
-        marginBottom: 200,
     },
 });
 

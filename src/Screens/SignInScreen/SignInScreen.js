@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, StyleSheet, Image, useWindowDimensions, Text } from "react-native";
+import { SafeAreaView, View, StyleSheet, Image, useWindowDimensions, KeyboardAvoidingView, Platform } from "react-native";
 
 import CustomInput from "../../Components/CustomInput";
 import CustomButton from "../../Components/CustomButton/CustomButton";
@@ -24,7 +24,7 @@ const SignInScreen = ({ navigation }) => {
 
     const [isFocused] = useState({signIn: navigation.isFocused(), signUp: !navigation.isFocused()});
 
-    const { height } = useWindowDimensions();
+    const { height, width } = useWindowDimensions();
 
     const onSignInPressed = async () => {
         if (validate()) {
@@ -58,59 +58,71 @@ const SignInScreen = ({ navigation }) => {
     }
 
     return (
-        <View style={[styles.root, { paddingBottom: height * 0.2 }]}>
-
-            {/* fix logo positioning/margin/padding */}
-            <Image source={Logo} style={[styles.logo, { height: height * 0.3, marginBottom: height * 0.15 }]} />
-
-            <SignIn_SignUp_Buttons navigation={navigation} focus={isFocused}/>
+        <SafeAreaView style={[styles.root, {height: height}]}>
             
-            <CustomInput
-                value={email}
-                setValue={setEmail}
-                placeholder="Email"
-                placeholderTextColor="black"
-            />
+            <KeyboardAvoidingView style={[styles.mainView, {height: height}]} 
+                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
 
-            <CustomInput
-                value={password}
-                setValue={setPassword}
-                placeholder="Password"
-                placeholderTextColor="black"
-                secureTextEntry={true}
-            />
+                <View style={styles.logoView}>
+                    <Image source={Logo} style={[styles.logo, {alignSelf: "center"}]} resizeMode="contain" />
+                </View>
+                
+                <View style={styles.inputView}>
+                    <SignIn_SignUp_Buttons navigation={navigation} focus={isFocused}/>
+                    <CustomInput
+                        value={email}
+                        setValue={setEmail}
+                        placeholder="Email"
+                        placeholderTextColor="black"
+                        style={{}}
+                    />
+                    <CustomInput
+                        value={password}
+                        setValue={setPassword}
+                        placeholder="Password"
+                        placeholderTextColor="black"
+                        secureTextEntry={true}
+                        style={{}}
+                    />
+                    <CustomButton
+                        text="Sign In"
+                        onPress={onSignInPressed}
+                        style={{ backgroundColor: Colors.green }}
+                    />
+                </View>
 
-            <CustomButton
-                text="Sign In"
-                onPress={onSignInPressed}
-                style={{ backgroundColor: Colors.green }}
-            />
+                </KeyboardAvoidingView>
 
-        </View>
+        </SafeAreaView>
     );
 }
 
 const styles = StyleSheet.create({
     root: {
-        alignItems: "center",
-        paddingBottom: 50,
-        paddingHorizontal: 20,
         backgroundColor: Colors.blueGray,
         flex: 1,
-        justifyContent: "flex-end",
-    },
-    form: {
+    }, 
+    mainView: {
+        justifyContent: "row",
         alignItems: "center",
-        padding: 20,
-        // flex: 1,
+
+    },
+    inputView: {
+        flex:2,
+        justifyContent: "flex-start",
+        width: "75%",
+    },
+    logoView: {
+        flex:1,
+        width: "100%",
         justifyContent: "center",
+        flexDirection: "row"
     },
     logo: {
-        width: "70%",
+        width: 125,
+        height: 125,
         maxHeight: 125,
         maxWidth: 125,
-        marginTop: 30,
-        marginBottom: 200,
     },
 });
 
