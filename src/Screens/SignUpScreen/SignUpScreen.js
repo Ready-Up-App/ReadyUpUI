@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, StyleSheet, Image, useWindowDimensions, KeyboardAvoidingView, Platform } from "react-native";
+import { SafeAreaView, View, StyleSheet, Image, useWindowDimensions, KeyboardAvoidingView, Platform } from "react-native";
 
 import CustomInput from "../../Components/CustomInput";
 import CustomButton from "../../Components/CustomButton/CustomButton";
@@ -10,9 +10,6 @@ import Colors from "../../Constants/Colors";
 import Logo from "../../../assets/regularIcon.png";
 import SignIn_SignUp_Buttons from "../../Components/SignIn_SignUp_Buttons";
 import { useLogin } from "../../AppContext/LoginProvider";
-import { ScrollView } from "react-native-web";
-
-import { SafeAreaView } from "react-native-safe-area-context";
 
 const SignUpScreen = ({ navigation }) => {
 
@@ -65,61 +62,75 @@ const SignUpScreen = ({ navigation }) => {
     }
 
     return (
-        <SafeAreaView>
-            <ScrollView style={styles.root}>
+        <SafeAreaView style={[styles.root, {height: height}]}>
             
-                <Image source={Logo} style={[styles.logo, { height: height * 0.3 }]} resizeMode="contain" />
+            <KeyboardAvoidingView style={[styles.mainView, {height: height}]} 
+                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
 
-                <SignIn_SignUp_Buttons navigation={navigation} focus={isFocused}/>
+                <View style={styles.logoView}>
+                    <Image source={Logo} style={[styles.logo, {alignSelf: "center"}]} resizeMode="contain" />
+                </View>
 
-                <CustomInput
-                    value={username}
-                    setValue={setUsername}
-                    placeholder="Username"
-                    placeholderTextColor="black"
-                />
+                <View style={styles.inputView}>
+                    <SignIn_SignUp_Buttons navigation={navigation} focus={isFocused}/>
+                    <CustomInput
+                        value={username}
+                        setValue={setUsername}
+                        placeholder="Username"
+                        placeholderTextColor="black"
+                    />
+                    <CustomInput
+                        value={email}
+                        setValue={setEmail}
+                        placeholder="Email"
+                        placeholderTextColor="black"
+                    />
+                    <CustomInput
+                        value={password}
+                        setValue={setPassword}
+                        placeholder="Password"
+                        secureTextEntry={true}
+                        placeholderTextColor="black"
+                    />
+                    <CustomButton
+                        text="Sign Up"
+                        onPress={onSignUpPressed}
+                        style={{ backgroundColor: Colors.green }}
+                    />
+                </View>
 
-                <CustomInput
-                    value={email}
-                    setValue={setEmail}
-                    placeholder="Email"
-                    placeholderTextColor="black"
-                />
+                </KeyboardAvoidingView>
 
-                <CustomInput
-                    value={password}
-                    setValue={setPassword}
-                    placeholder="Password"
-                    secureTextEntry={true}
-                    placeholderTextColor="black"
-                />
-
-                <CustomButton
-                    text="Sign Up"
-                    onPress={onSignUpPressed}
-                    style={{ backgroundColor: Colors.green }}
-            />
-            </ScrollView>
         </SafeAreaView>
     )
 }
 
-
 const styles = StyleSheet.create({
     root: {
-        // alignItems: "center",
-        paddingBottom: 50,
-        paddingHorizontal: 20,
         backgroundColor: Colors.blueGray,
         flex: 1,
-        // justifyContent: "flex-end",
+    }, 
+    mainView: {
+        justifyContent: "row",
+        alignItems: "center",
+
+    },
+    inputView: {
+        flex:2,
+        justifyContent: "flex-start",
+        width: "75%",
+    },
+    logoView: {
+        flex:1,
+        width: "100%",
+        justifyContent: "center",
+        flexDirection: "row"
     },
     logo: {
-        width: "70%",
+        width: 125,
+        height: 125,
         maxHeight: 125,
         maxWidth: 125,
-        marginTop: 30,
-        marginBottom: 200,
     },
 });
 

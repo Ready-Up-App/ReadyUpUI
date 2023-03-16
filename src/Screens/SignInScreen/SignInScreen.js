@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, StyleSheet, Image, useWindowDimensions, Text } from "react-native";
+import { SafeAreaView, View, StyleSheet, Image, useWindowDimensions, KeyboardAvoidingView, Platform } from "react-native";
 
 import CustomInput from "../../Components/CustomInput";
 import CustomButton from "../../Components/CustomButton/CustomButton";
@@ -11,8 +11,6 @@ import { useLogin } from "../../AppContext/LoginProvider";
 
 import Logo from "../../../assets/regularIcon.png";
 import SignIn_SignUp_Buttons from "../../Components/SignIn_SignUp_Buttons/SignIn_SignUp_Buttons";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { ScrollView } from "react-native-web";
 
 const SignInScreen = ({ navigation }) => {
 
@@ -61,13 +59,13 @@ const SignInScreen = ({ navigation }) => {
 
     return (
         <SafeAreaView style={[styles.root, {height: height}]}>
-            <View style={[styles.mainView, {height: height}]}>
+            
+            <KeyboardAvoidingView style={[styles.mainView, {height: height}]} 
+                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
 
-                {/* Fix Image positioning with new ScrollView */}
                 <View style={styles.logoView}>
-                    <Image source={Logo} style={styles.logo} resizeMode="contain" />
+                    <Image source={Logo} style={[styles.logo, {alignSelf: "center"}]} resizeMode="contain" />
                 </View>
-
                 
                 <View style={styles.inputView}>
                     <SignIn_SignUp_Buttons navigation={navigation} focus={isFocused}/>
@@ -76,7 +74,7 @@ const SignInScreen = ({ navigation }) => {
                         setValue={setEmail}
                         placeholder="Email"
                         placeholderTextColor="black"
-                        style={{  }}
+                        style={{}}
                     />
                     <CustomInput
                         value={password}
@@ -84,17 +82,17 @@ const SignInScreen = ({ navigation }) => {
                         placeholder="Password"
                         placeholderTextColor="black"
                         secureTextEntry={true}
-                        style={{  }}
+                        style={{}}
                     />
                     <CustomButton
-                    text="Sign In"
-                    onPress={onSignInPressed}
-                    style={{ backgroundColor: Colors.green }}
+                        text="Sign In"
+                        onPress={onSignInPressed}
+                        style={{ backgroundColor: Colors.green }}
                     />
                 </View>
-                
-                
-                </View>
+
+                </KeyboardAvoidingView>
+
         </SafeAreaView>
     );
 }
@@ -110,10 +108,9 @@ const styles = StyleSheet.create({
 
     },
     inputView: {
-        flex:1,
-        justifyContent: "flex-end",
+        flex:2,
+        justifyContent: "flex-start",
         width: "75%",
-        paddingBottom: "1%",
     },
     logoView: {
         flex:1,
@@ -126,9 +123,6 @@ const styles = StyleSheet.create({
         height: 125,
         maxHeight: 125,
         maxWidth: 125,
-        // flexDirection: "column",
-        // marginTop: 30,
-        // marginBottom: 200,
     },
 });
 

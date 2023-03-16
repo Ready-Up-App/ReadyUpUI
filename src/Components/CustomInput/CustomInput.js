@@ -1,15 +1,12 @@
-import React, { useState } from "react";
-
-import { TextInput, StyleSheet, KeyboardAvoidingView, useWindowDimensions, Platform } from "react-native";
+import React from "react";
+import { View, TextInput, StyleSheet, } from "react-native";
 
 import Colors from "../../Constants/Colors";
 
 const CustomInput = ({ value, setValue, placeholder, secureTextEntry, placeholderTextColor, style }) => {
 
     return (
-        <KeyboardAvoidingView style={[styles.container, style]}
-            behavior={Platform.OS === "ios" ? "padding" : "height"}
-        >
+        <View style={[styles.container, style]}>
             <TextInput
                 value={value}
                 placeholder={placeholder}
@@ -18,7 +15,7 @@ const CustomInput = ({ value, setValue, placeholder, secureTextEntry, placeholde
                 onChangeText={setValue}
                 secureTextEntry={secureTextEntry}
             />
-        </KeyboardAvoidingView>
+        </View>
     )
 }
 
@@ -32,12 +29,10 @@ const styles = StyleSheet.create({
         borderRadius: 50,
 
         paddingVertical: 10,
-        // height: 10,
         marginVertical: 5,
     },
     input: {
         textAlign: "center",
-        // marginHorizontal: 5,
     },
 });
 

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 
 import { View, StyleSheet } from "react-native";
 
@@ -28,7 +28,6 @@ const SignIn_SignUp_Buttons = ({ navigation, focus }) => {
                 style={{
                     backgroundColor: focus.signIn ? Colors.darkGray: Colors.purple,
                     borderRadius: 0,
-                    // width: "30%",
                 }}
             />
             <CustomButton
@@ -37,7 +36,6 @@ const SignIn_SignUp_Buttons = ({ navigation, focus }) => {
                 style={{
                     backgroundColor: focus.signUp ? Colors.darkGray: Colors.purple,
                     borderRadius: 0,
-                    // width: "30%",
                 }}
             />
         </View>
@@ -47,9 +45,10 @@ const SignIn_SignUp_Buttons = ({ navigation, focus }) => {
 
 const styles = StyleSheet.create({
     container: {
-        // width: "60%",
+        width: "60%",
         flexDirection: "row",
         justifyContent: "center",
+        alignSelf: "center"
     },
 })
 
