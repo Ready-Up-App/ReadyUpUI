@@ -13,7 +13,7 @@ const AuthStack = createNativeStackNavigator();
 
 const AppNavigation = () => {
     return (
-        <Stack.Navigator screenOptions={{ headerShown: false }}>
+        <Stack.Navigator screenOptions={{ headerShown: false, animation: "none" }}>
             <Stack.Screen component={GroupsScreen} name="GroupsScreen" />
         </Stack.Navigator>
     )
@@ -21,7 +21,7 @@ const AppNavigation = () => {
 
 const SignInNavigation = () => {
     return (
-        <AuthStack.Navigator screenOptions={{ headerShown: false }} initialRouteName="SignIn">
+        <AuthStack.Navigator screenOptions={{ headerShown: false, animation: "none" }} initialRouteName="SignIn">
             <AuthStack.Screen component={SignInScreen} name="SignIn" />
             <AuthStack.Screen component={SignUpScreen} name="SignUp" />
         </AuthStack.Navigator>
