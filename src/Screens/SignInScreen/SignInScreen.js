@@ -6,7 +6,7 @@ import CustomButton from "../../Components/CustomButton/CustomButton";
 
 import Colors from "../../Constants/Colors";
 
-import { signInCall } from "../../Api/Api";
+import { signInCall } from "../../Api/AuthenticationAPIs/AuthApi";
 import { useLogin } from "../../AppContext/LoginProvider";
 
 import Logo from "../../../assets/regularIcon.png";

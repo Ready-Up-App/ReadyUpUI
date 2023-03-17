@@ -4,7 +4,7 @@ import { View, StyleSheet, Image, useWindowDimensions, KeyboardAvoidingView, Pla
 import CustomInput from "../../Components/CustomInput";
 import CustomButton from "../../Components/CustomButton/CustomButton";
 
-import { signUpCall } from "../../Api/Api";
+import { signUpCall } from "../../Api/AuthenticationAPIs/AuthApi";
 import Colors from "../../Constants/Colors";
 
 import Logo from "../../../assets/regularIcon.png";

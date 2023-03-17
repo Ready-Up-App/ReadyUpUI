@@ -1,4 +1,5 @@
-const root = "https://localhost:5001/api/";
+import root from "../root";
+
 const signIn = "signIn";
 const signUp = "signUp";
 const verify = "auth/verifyToken";
