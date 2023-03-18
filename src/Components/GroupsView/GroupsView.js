@@ -1,33 +1,44 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, useMemo } from "react"
 import { View, FlatList, StyleSheet, Text } from "react-native"
 
 import { getGroupsCall } from "../../Api/GroupsAPIs/GroupsAPI"
 import Colors from "../../Constants/Colors"
 
+import LoadScreen from "../Loading/LoadScreen"
+
 const GroupsView = (props) => {
 
     const [groups, setGroups] = useState([]);
 
+    const [isLoading, setIsLoading] = useState(true);
+
     console.log(groups)
+
+    const showLoading = () => {
+        setIsLoading(true);
+    }
+
+    const hideLoading = () => {
+        setIsLoading(false);        
+    }
+
     useEffect(() => {
+        showLoading();
         try {
-                if(groups[0] === undefined){
-                    getGroupsCall()
-                    .then((result) => setGroups(result));        
-                }else {
-                    getGroupsCall()
-                    .then((result) => setGroups((oldGroups) => [...oldGroups, result]));
-                }
+            getGroupsCall()
+            .then((result) => setGroups(result))
+            .then(hideLoading);
 
         } catch (error) {
             console.log(error)
-            console.log("failed")            
         }
     }, [])
 
+    
     return (
         <View style={[styles.root, props.style]}>
-            <FlatList 
+            {/* conditional loading for whether data is loaded from api */}
+            {isLoading ? <LoadScreen/> : <FlatList 
                 style={styles.itemContainer}
                 data={groups}
                 renderItem={({item}) => (
@@ -36,7 +47,7 @@ const GroupsView = (props) => {
                     </View>
                 )}
                 numColumns={2}>
-            </FlatList>
+            </FlatList>}
         </View>
     )
 
@@ -63,6 +74,10 @@ const styles = StyleSheet.create({
         padding: 10,
 
         backgroundColor: Colors.lightBlueGray
+    },
+    temp: {
+        backgroundColor: Colors.pink,
+        flex: 1
     }
 });
 

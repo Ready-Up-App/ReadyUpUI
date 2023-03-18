@@ -14,12 +14,7 @@ const GroupsScreen = () => {
             </View>
             <View style={styles.topView}>
                 
-                <View style={styles.collapsableView}>
-
-                </View>
-                <GroupsView style={styles.groupsView}>
-
-                </GroupsView>
+                <GroupsView style={styles.groupsView}/>
             </View>
 
             <View style={styles.bottomView}>
@@ -44,10 +39,6 @@ const styles = StyleSheet.create({
     banner: {
         flex: 1,
         backgroundColor: Colors.black,
-    },
-    collapsableView: {
-        flex: 1,
-        backgroundColor: Colors.darkGray
     },
     groupsView: {
         flex: 8,

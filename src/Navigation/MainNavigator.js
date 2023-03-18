@@ -31,8 +31,8 @@ const SignInNavigation = () => {
 
 const MainNavigator = () => {
     const { isLoggedIn } = useLogin();
-    // if(true){
-    if (isLoggedIn) {
+    if(true){
+    // if (isLoggedIn) {
         return (
             <AppNavigation/>
         )
