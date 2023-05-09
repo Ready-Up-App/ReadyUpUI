@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import { SafeAreaView, View, StyleSheet, Image, useWindowDimensions, KeyboardAvoidingView, Platform } from "react-native";
+import * as SecureStore from 'expo-secure-store';
 
 import CustomInput from "../../Components/CustomInput";
 import CustomButton from "../../Components/CustomButton/CustomButton";
 
 import Colors from "../../Constants/Colors";
 
-import { signInCall } from "../../Api/Api";
+import { signInCall } from "../../Api/AuthenticationAPIs/AuthApi";
 import { useLogin } from "../../AppContext/LoginProvider";
 
 import Logo from "../../../assets/regularIcon.png";
@@ -16,36 +17,54 @@ const SignInScreen = ({ navigation }) => {
 
     const { setIsLoggedIn } = useLogin();
 
-
-    const [email, setEmail] = useState("");
+    const [username_email, setUsername_Email] = useState("");
     const [password, setPassword] = useState("");
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     const [errors, setErrors] = useState({});
 
     const [isFocused] = useState({signIn: navigation.isFocused(), signUp: !navigation.isFocused()});
 
     const { height, width } = useWindowDimensions();
+    
+    const options = { keychainAccessible: SecureStore.WHEN_UNLOCKED_THIS_DEVICE_ONLY }
+
+    async function saveOnValidSignIn(token) {
+        await SecureStore.setItemAsync("username", username_email, options);
+        await SecureStore.setItemAsync("password", password, options);
+        await SecureStore.setItemAsync("token", token, options);
+    }
 
     const onSignInPressed = async () => {
         if (validate()) {
-            try {
-                const result = await signInCall({email, password});
-                if (result.status == 200) {
-                    setIsLoggedIn(true);
+            let isEmail = emailRegex.test(username_email);
+            const result = await signInCall({username_email, isEmail, password})
+            .then(result => {
+                console.log(result)
+                if (result instanceof Error) {
+                    //error handle
+                    console.log("Error handle")
+                } else {
+                    if (result.success) {
+                        saveOnValidSignIn(result.token);
+                        setIsLoggedIn(true);
+                    }else {
+                        console.log(result.reason);
+                    }
                 }
-            } catch (error) {
-                console.log(error)
-            }
+
+            });
         }
     }
 
     const validate = () => {
         var valid = true;
 
-        if (email.trim().length === 0) {
+        if (username_email.trim().length === 0) {
             valid = false;
-            errors["email"] = "Please enter an email address."
-            console.warn("enter an email for sign in");
+            errors["email"] = "Please enter either a username or an email address."
+            console.warn("enter either a username or an email for sign in");
         }
 
         if (password.trim().length === 0) {
@@ -70,9 +89,9 @@ const SignInScreen = ({ navigation }) => {
                 <View style={styles.inputView}>
                     <SignIn_SignUp_Buttons navigation={navigation} focus={isFocused}/>
                     <CustomInput
-                        value={email}
-                        setValue={setEmail}
-                        placeholder="Email"
+                        value={username_email}
+                        setValue={setUsername_Email}
+                        placeholder="Username or Email"
                         placeholderTextColor="black"
                         style={{}}
                     />

@@ -8,13 +8,13 @@ import Colors from "../../Constants/Colors";
 
 const SignIn_SignUp_Buttons = ({ navigation, focus }) => {
 
-    function signIn() {
+    const signIn = () => {
         if(focus.signUp){
             navigation.navigate("SignIn");
         }
     }
 
-    function signUp() {
+    const signUp = () => {
         if(focus.signIn){
             navigation.navigate("SignUp");
         }

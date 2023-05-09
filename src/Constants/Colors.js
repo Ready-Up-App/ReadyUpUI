@@ -8,6 +8,7 @@ export default {
     blue: "#3498db",
     purple: "#9b59b6",
     blueGray: "#34495e",
+    lightBlueGray: "#5f7a94",
     orange: "#e67e22",
     red: "#e74c3c",
     pink: "#fd79a8",

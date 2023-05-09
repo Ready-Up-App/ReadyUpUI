@@ -4,7 +4,7 @@ import { SafeAreaView, View, StyleSheet, Image, useWindowDimensions, KeyboardAvo
 import CustomInput from "../../Components/CustomInput";
 import CustomButton from "../../Components/CustomButton/CustomButton";
 
-import { signUpCall } from "../../Api/Api";
+import { signUpCall } from "../../Api/AuthenticationAPIs/AuthApi";
 import Colors from "../../Constants/Colors";
 
 import Logo from "../../../assets/regularIcon.png";
@@ -19,6 +19,8 @@ const SignUpScreen = ({ navigation }) => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
 
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
     const [errors, setErrors] = useState({});
 
     const [isFocused] = useState({signUp: navigation.isFocused(), signIn: !navigation.isFocused()});
@@ -27,6 +29,11 @@ const SignUpScreen = ({ navigation }) => {
 
     const onSignUpPressed = async () => {
         try {
+            let validEmail = emailRegex.test(email);
+            if(!validEmail) {
+                console.warn("Please enter a valid email");
+                return;
+            }
             const result = await signUpCall({email, username, password});
             if (validate() && result) {
                 setIsLoggedIn(true);
