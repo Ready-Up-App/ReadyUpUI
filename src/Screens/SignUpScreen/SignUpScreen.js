@@ -19,6 +19,8 @@ const SignUpScreen = ({ navigation }) => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
 
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
     const [errors, setErrors] = useState({});
 
     const [isFocused] = useState({signUp: navigation.isFocused(), signIn: !navigation.isFocused()});
@@ -27,6 +29,11 @@ const SignUpScreen = ({ navigation }) => {
 
     const onSignUpPressed = async () => {
         try {
+            let validEmail = emailRegex.test(email);
+            if(!validEmail) {
+                console.warn("Please enter a valid email");
+                return;
+            }
             const result = await signUpCall({email, username, password});
             if (validate() && result) {
                 setIsLoggedIn(true);

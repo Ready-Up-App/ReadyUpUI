@@ -1,35 +1,12 @@
-import root from "../root";
+import url from "../urls";
+import * as SecureStore from 'expo-secure-store';
+import { useLogin } from "../../AppContext/LoginProvider";
 
-const signIn = "signIn";
-const signUp = "signUp";
-const verify = "auth/verifyToken";
 
 export const signInCall = async (props) => {
 
     try {
-        const result = await fetch(root + signIn,
-            {
-                method: "POST",
-                headers: {
-                    Accept: "application/json",
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    Email: props.email,
-                    Password: props.password
-                })
-            }
-        )
-        return result;
-    } catch (error) {
-        return error.response.data   
-    }
-}
-
-export const tokenSignInCall = async (token) => {
-
-    try {
-        const result = await fetch(root + signIn,
+        const result = await fetch(url.root + url.signIn,
             {
                 method: "POST",
                 headers: {
@@ -37,32 +14,58 @@ export const tokenSignInCall = async (token) => {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    Token: token,
+                    Username_Email: props.username_email,
+                    IsEmail: props.isEmail,
+                    Password: props.password
                 })
             }
+        ).then(response => 
+            response.json()
         )
         return result;
     } catch (error) {
-        return error.response.data
+        return error;   
     }
 }
 
 
+//work in progress
 export const signUpCall = async (props) => {
+    const [ token, setToken ] = useState("");
+
+    async function getToken() {
+        setToken(await SecureStore.getItemAsync("token"));
+    }
 
     try {
-        const result = await fetch(root + signUp,
+        const result = await fetch(url.root + url.signUp,
             {
                 method: "POST",
+                withCredentials: true,
+                credentials: "include",
                 headers: {
-                    Accept: "application/json",
+                    "Accept": "application/json",
                     "Content-Type": "application/json",
+                    "Authorization" : `Bearer ${token}`,
+                },
+                Authorization: {
+                    
                 },
                 body: JSON.stringify({
                     Username: props.username,
-                    Password: props.password,
-                    Email: props.email.toLowerCase()
+                    Email: props.email.toLowerCase(),
+                    Password: props.password
                 })
+                // method: "POST",
+                // headers: {
+                //     Accept: "application/json",
+                //     "Content-Type": "application/json",
+                // },
+                // body: JSON.stringify({
+                //     Username: props.username,
+                //     Password: props.password,
+                //     Email: props.email.toLowerCase()
+                // })
             }
         )
         return result;

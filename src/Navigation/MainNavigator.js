@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
@@ -8,8 +8,13 @@ import SignUpScreen from "../Screens/SignUpScreen/SignUpScreen";
 
 import { useLogin } from "../AppContext/LoginProvider";
 
+import * as SplashScreen from 'expo-splash-screen';
+import * as SecureStore from 'expo-secure-store';
+
 const Stack = createNativeStackNavigator();
 const AuthStack = createNativeStackNavigator();
+
+// SplashScreen.show();
 
 const AppNavigation = () => {
     return (
@@ -21,7 +26,7 @@ const AppNavigation = () => {
 
 const SignInNavigation = () => {
     return (
-        <AuthStack.Navigator screenOptions={{ headerShown: false, animation: "none" }} initialRouteName="SignIn">
+        <AuthStack.Navigator screenOptions={{ headerShown: false, animation: "fade" }} initialRouteName="SignIn">
             <AuthStack.Screen component={SignInScreen} name="SignIn" />
             <AuthStack.Screen component={SignUpScreen} name="SignUp" />
         </AuthStack.Navigator>
@@ -31,8 +36,8 @@ const SignInNavigation = () => {
 
 const MainNavigator = () => {
     const { isLoggedIn } = useLogin();
-    if(true){
-    // if (isLoggedIn) {
+
+    if (isLoggedIn) {
         return (
             <AppNavigation/>
         )

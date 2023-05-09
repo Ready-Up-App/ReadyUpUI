@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import { View, SafeAreaView, StyleSheet, Text } from "react-native";
 
@@ -7,20 +7,24 @@ import Colors from "../../Constants/Colors";
 import GroupsView from "../../Components/GroupsView/GroupsView";
 
 const GroupsScreen = () => {
+            
+    const [selectedGroup, setSelectedGroup] = useState();
+
+    const updateSelectedGroup = (group) => {
+        setSelectedGroup(group);
+    }
+
     return (
         <SafeAreaView style={styles.root}>
             <View style={styles.banner}>
-                <Text> READY UP MOFO </Text>
+                <Text> READY UP </Text>
             </View>
             <View style={styles.topView}>
-                
-                <GroupsView style={styles.groupsView}/>
+                <GroupsView style={styles.groupsView} selectGroup={updateSelectedGroup}/>
             </View>
 
             <View style={styles.bottomView}>
-
             </View>
-        
         </SafeAreaView>
     )
 }

@@ -1,18 +1,18 @@
 import { useEffect, useState, useMemo } from "react"
-import { View, FlatList, StyleSheet, Text } from "react-native"
+import { View, FlatList, StyleSheet, TouchableOpacity, Text } from "react-native"
 
 import { getGroupsCall } from "../../Api/GroupsAPIs/GroupsAPI"
 import Colors from "../../Constants/Colors"
 
 import LoadScreen from "../Loading/LoadScreen"
 
-const GroupsView = (props) => {
+const GroupsView = ({ style, selectGroup}) => {
 
     const [groups, setGroups] = useState([]);
 
-    const [isLoading, setIsLoading] = useState(true);
+    const [selectedGroup, setSelectedGroup] = useState("");
 
-    console.log(groups)
+    const [isLoading, setIsLoading] = useState(true);
 
     const showLoading = () => {
         setIsLoading(true);
@@ -22,38 +22,58 @@ const GroupsView = (props) => {
         setIsLoading(false);        
     }
 
+    const select = (group) => {
+        selectGroup(group);
+        setSelectedGroup(group);
+    }
+
     useEffect(() => {
+        let isCancelled = false;
         showLoading();
+        setSelectedGroup("");
         try {
             getGroupsCall()
-            .then((result) => setGroups(result))
-            .then(hideLoading);
-
+            .then((result) => {
+                if(!isCancelled) {
+                    setGroups(result)
+                    hideLoading();
+                }
+            })
+            
         } catch (error) {
-            console.log(error)
+            console.log(error);
+        }
+        return () => {
+            isCancelled = true;
         }
     }, [])
 
-    
-    return (
-        <View style={[styles.root, props.style]}>
-            {/* conditional loading for whether data is loaded from api */}
-            {isLoading ? <LoadScreen/> : <FlatList 
-                style={styles.itemContainer}
-                data={groups}
-                renderItem={({item}) => (
-                    <View style={styles.items}>
-                        <Text>{item.name}</Text>
-                    </View>
-                )}
-                numColumns={2}>
-            </FlatList>}
-        </View>
-    )
 
-
-
-
+    if(isLoading) {
+        return (<LoadScreen/>) 
+    } else if (selectedGroup === ""){
+        return (
+                <FlatList 
+                    style={styles.itemContainer}
+                    data={groups}
+                    renderItem={({item}) => (
+                        <View style={{flex: 1}}> 
+                            <TouchableOpacity style={styles.items} 
+                            onPress={() => select(item.name)}>
+                                <Text>{item.name}</Text>
+                            </TouchableOpacity>
+                        </View>
+                    )}
+                    numColumns={2}>
+                </FlatList>
+        )
+    } else {
+        return (
+            <View>
+                <Text>{selectedGroup}</Text>
+            </View>
+        )    
+    }
 }
 
 const styles = StyleSheet.create({
@@ -65,18 +85,15 @@ const styles = StyleSheet.create({
         
     },
     items: {
-        flex: 1,
         borderRadius: 10,
         borderColor: Colors.black,
         borderWidth: 1,
-        width: "50%",
         margin: 10,
         padding: 10,
 
         backgroundColor: Colors.lightBlueGray
     },
-    temp: {
-        backgroundColor: Colors.pink,
+    button: {
         flex: 1
     }
 });
