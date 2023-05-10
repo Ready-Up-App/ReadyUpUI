@@ -1,6 +1,5 @@
 import url from "../urls";
 import * as SecureStore from 'expo-secure-store';
-import { useLogin } from "../../AppContext/LoginProvider";
 
 
 export const signInCall = async (props) => {
@@ -28,14 +27,7 @@ export const signInCall = async (props) => {
     }
 }
 
-
-//work in progress
 export const signUpCall = async (props) => {
-    const [ token, setToken ] = useState("");
-
-    async function getToken() {
-        setToken(await SecureStore.getItemAsync("token"));
-    }
 
     try {
         const result = await fetch(url.root + url.signUp,
@@ -46,32 +38,19 @@ export const signUpCall = async (props) => {
                 headers: {
                     "Accept": "application/json",
                     "Content-Type": "application/json",
-                    "Authorization" : `Bearer ${token}`,
-                },
-                Authorization: {
-                    
                 },
                 body: JSON.stringify({
                     Username: props.username,
                     Email: props.email.toLowerCase(),
                     Password: props.password
                 })
-                // method: "POST",
-                // headers: {
-                //     Accept: "application/json",
-                //     "Content-Type": "application/json",
-                // },
-                // body: JSON.stringify({
-                //     Username: props.username,
-                //     Password: props.password,
-                //     Email: props.email.toLowerCase()
-                // })
             }
+        ).then(response => 
+            response.json()
         )
         return result;
     } catch (error) {
-        console.log(error)
-        return error.response.data
+        return error;
     }
     
 }

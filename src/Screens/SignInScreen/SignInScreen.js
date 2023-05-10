@@ -6,6 +6,7 @@ import CustomInput from "../../Components/CustomInput";
 import CustomButton from "../../Components/CustomButton/CustomButton";
 
 import Colors from "../../Constants/Colors";
+import { emailRegex } from "../../Constants/Regex";
 
 import { signInCall } from "../../Api/AuthenticationAPIs/AuthApi";
 import { useLogin } from "../../AppContext/LoginProvider";
@@ -20,21 +21,13 @@ const SignInScreen = ({ navigation }) => {
     const [username_email, setUsername_Email] = useState("");
     const [password, setPassword] = useState("");
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
     const [errors, setErrors] = useState({});
 
     const [isFocused] = useState({signIn: navigation.isFocused(), signUp: !navigation.isFocused()});
 
-    const { height, width } = useWindowDimensions();
+    const { height } = useWindowDimensions();
     
     const options = { keychainAccessible: SecureStore.WHEN_UNLOCKED_THIS_DEVICE_ONLY }
-
-    async function saveOnValidSignIn(token) {
-        await SecureStore.setItemAsync("username", username_email, options);
-        await SecureStore.setItemAsync("password", password, options);
-        await SecureStore.setItemAsync("token", token, options);
-    }
 
     const onSignInPressed = async () => {
         if (validate()) {
@@ -47,13 +40,11 @@ const SignInScreen = ({ navigation }) => {
                     console.log("Error handle")
                 } else {
                     if (result.success) {
-                        saveOnValidSignIn(result.token);
                         setIsLoggedIn(true);
                     }else {
                         console.log(result.reason);
                     }
                 }
-
             });
         }
     }

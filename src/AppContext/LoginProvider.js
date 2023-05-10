@@ -1,7 +1,5 @@
 import { createContext, useContext, useState } from "react";
 
-// import EncryptedStorage from "react-native-encrypted-storage";
-
 const LoginContext = createContext();
 
 const LoginProvider = ({ children }) => {
