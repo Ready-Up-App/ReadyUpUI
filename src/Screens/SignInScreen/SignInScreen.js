@@ -1,6 +1,5 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { SafeAreaView, View, StyleSheet, Image, useWindowDimensions, KeyboardAvoidingView, Platform } from "react-native";
-import * as SecureStore from 'expo-secure-store';
 
 import CustomInput from "../../Components/CustomInput";
 import CustomButton from "../../Components/CustomButton/CustomButton";
@@ -13,10 +12,12 @@ import { useLogin } from "../../AppContext/LoginProvider";
 
 import Logo from "../../../assets/regularIcon.png";
 import SignIn_SignUp_Buttons from "../../Components/SignIn_SignUp_Buttons/SignIn_SignUp_Buttons";
+import LoadScreen from "../../Components/Loading/LoadScreen";
 
 const SignInScreen = ({ navigation }) => {
 
     const { setIsLoggedIn } = useLogin();
+    const [formSubmitted, setFormSubmitted] = useState(false);
 
     const [username_email, setUsername_Email] = useState("");
     const [password, setPassword] = useState("");
@@ -27,17 +28,14 @@ const SignInScreen = ({ navigation }) => {
 
     const { height } = useWindowDimensions();
     
-    const options = { keychainAccessible: SecureStore.WHEN_UNLOCKED_THIS_DEVICE_ONLY }
-
-    const onSignInPressed = async () => {
+    const signIn = async () => {
         if (validate()) {
             let isEmail = emailRegex.test(username_email);
-            const result = await signInCall({username_email, isEmail, password})
+            await signInCall({username_email, isEmail, password})
             .then(result => {
-                console.log(result)
                 if (result instanceof Error) {
                     //error handle
-                    console.log("Error handle")
+                    console.log("Error handle");
                 } else {
                     if (result.success) {
                         setIsLoggedIn(true);
@@ -67,7 +65,28 @@ const SignInScreen = ({ navigation }) => {
         return valid;
     }
 
-    return (
+    useEffect(() => {
+        let isCancelled = false;
+        if (formSubmitted) {
+            signIn()
+            .then(() =>{
+                if (!isCancelled){
+                    //print out errors required
+                    setFormSubmitted(false);
+                }
+            })
+            .finally()
+        }
+        return () => {
+            isCancelled = true;
+        }
+        
+    }, [formSubmitted])
+
+    if (formSubmitted) {
+        return <LoadScreen/>
+    } else {
+        return (
         <SafeAreaView style={[styles.root, {height: height}]}>
             
             <KeyboardAvoidingView style={[styles.mainView, {height: height}]} 
@@ -96,7 +115,7 @@ const SignInScreen = ({ navigation }) => {
                     />
                     <CustomButton
                         text="Sign In"
-                        onPress={onSignInPressed}
+                        onPress={() => setFormSubmitted(true)}
                         style={{ backgroundColor: Colors.green }}
                     />
                 </View>
@@ -105,6 +124,7 @@ const SignInScreen = ({ navigation }) => {
 
         </SafeAreaView>
     );
+    }
 }
 
 const styles = StyleSheet.create({

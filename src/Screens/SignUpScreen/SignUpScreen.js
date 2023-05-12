@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { SafeAreaView, View, StyleSheet, Image, useWindowDimensions, KeyboardAvoidingView, Platform } from "react-native";
 import * as SecureStore from 'expo-secure-store';
 
@@ -12,10 +12,12 @@ import { emailRegex } from "../../Constants/Regex";
 import Logo from "../../../assets/regularIcon.png";
 import SignIn_SignUp_Buttons from "../../Components/SignIn_SignUp_Buttons";
 import { useLogin } from "../../AppContext/LoginProvider";
+import LoadScreen from "../../Components/Loading/LoadScreen";
 
 const SignUpScreen = ({ navigation }) => {
 
-    const { setIsLoggedIn } = useLogin();
+    const {setIsLoggedIn} = useLogin();
+    const [formSubmitted, setFormSubmitted] = useState(false);
 
     const [email, setEmail] = useState("");
     const [username, setUsername] = useState("");
@@ -30,6 +32,7 @@ const SignUpScreen = ({ navigation }) => {
     const options = { keychainAccessible: SecureStore.WHEN_UNLOCKED_THIS_DEVICE_ONLY }
 
     async function saveOnValidSignUp(token) {
+        //TODO: find best way to safely store data
         if (await SecureStore.isAvailableAsync()) {
             await SecureStore.setItemAsync("email", email, options);
             await SecureStore.setItemAsync("username", username, options);
@@ -38,9 +41,9 @@ const SignUpScreen = ({ navigation }) => {
         }
     }
 
-    const onSignUpPressed = async () => {
+    const signUp = async () => {
         if (validate()) {
-            const result = await signUpCall({email, username, password})
+            await signUpCall({email, username, password})
             .then(result => {
                 if (result instanceof Error) {
                     //error handle
@@ -54,7 +57,6 @@ const SignUpScreen = ({ navigation }) => {
                     }
                 }
             });
-
         }
     }
 
@@ -72,6 +74,7 @@ const SignUpScreen = ({ navigation }) => {
             errors["email"] = "Please enter an email address."
             console.warn("enter an email for sign up");
         } else if (!emailRegex.test(email)) {
+            valid = false;
             errors["email"] = "Please enter a valid email";
             console.warn("Please enter a valid email");
         }
@@ -85,48 +88,63 @@ const SignUpScreen = ({ navigation }) => {
         return valid;
     }
 
-    return (
-        <SafeAreaView style={[styles.root, {height: height}]}>
-            
-            <KeyboardAvoidingView style={[styles.mainView, {height: height}]} 
-                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+    useEffect(() => {
+        if (formSubmitted) {
+            signUp()
+            .then(() =>{
+                //print out errors required
+                setFormSubmitted(false);
+            })
+            .finally()
+        }
+    }, [formSubmitted]);
 
-                <View style={styles.logoView}>
-                    <Image source={Logo} style={[styles.logo, {alignSelf: "center"}]} resizeMode="contain" />
-                </View>
+    if (formSubmitted){
+        return <LoadScreen/>
+    }else {
+        return (
+            <SafeAreaView style={[styles.root, {height: height}]}>
+                
+                <KeyboardAvoidingView style={[styles.mainView, {height: height}]} 
+                    behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
 
-                <View style={styles.inputView}>
-                    <SignIn_SignUp_Buttons navigation={navigation} focus={isFocused}/>
-                    <CustomInput
-                        value={username}
-                        setValue={setUsername}
-                        placeholder="Username"
-                        placeholderTextColor="black"
-                    />
-                    <CustomInput
-                        value={email}
-                        setValue={setEmail}
-                        placeholder="Email"
-                        placeholderTextColor="black"
-                    />
-                    <CustomInput
-                        value={password}
-                        setValue={setPassword}
-                        placeholder="Password"
-                        secureTextEntry={true}
-                        placeholderTextColor="black"
-                    />
-                    <CustomButton
-                        text="Sign Up"
-                        onPress={onSignUpPressed}
-                        style={{ backgroundColor: Colors.green }}
-                    />
-                </View>
+                    <View style={styles.logoView}>
+                        <Image source={Logo} style={[styles.logo, {alignSelf: "center"}]} resizeMode="contain" />
+                    </View>
 
-                </KeyboardAvoidingView>
+                    <View style={styles.inputView}>
+                        <SignIn_SignUp_Buttons navigation={navigation} focus={isFocused}/>
+                        <CustomInput
+                            value={username}
+                            setValue={setUsername}
+                            placeholder="Username"
+                            placeholderTextColor="black"
+                        />
+                        <CustomInput
+                            value={email}
+                            setValue={setEmail}
+                            placeholder="Email"
+                            placeholderTextColor="black"
+                        />
+                        <CustomInput
+                            value={password}
+                            setValue={setPassword}
+                            placeholder="Password"
+                            secureTextEntry={true}
+                            placeholderTextColor="black"
+                        />
+                        <CustomButton
+                            text="Sign Up"
+                            onPress={() => setFormSubmitted(true)}
+                            style={{ backgroundColor: Colors.green }}
+                        />
+                    </View>
 
-        </SafeAreaView>
-    )
+                    </KeyboardAvoidingView>
+
+            </SafeAreaView>
+        )
+    }
 }
 
 const styles = StyleSheet.create({

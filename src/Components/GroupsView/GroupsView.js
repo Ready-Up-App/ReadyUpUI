@@ -53,19 +53,19 @@ const GroupsView = ({ style, selectGroup}) => {
         return (<LoadScreen/>) 
     } else if (selectedGroup === ""){
         return (
-                <FlatList 
-                    style={styles.itemContainer}
-                    data={groups}
-                    renderItem={({item}) => (
-                        <View style={{flex: 1}}> 
-                            <TouchableOpacity style={styles.items} 
-                            onPress={() => select(item.name)}>
-                                <Text>{item.name}</Text>
-                            </TouchableOpacity>
-                        </View>
-                    )}
-                    numColumns={2}>
-                </FlatList>
+            <FlatList 
+                style={styles.itemContainer}
+                data={groups}
+                renderItem={({item}) => (
+                    <View style={{flex: 1}}> 
+                        <TouchableOpacity style={styles.items} 
+                        onPress={() => select(item.name)}>
+                            <Text>{item.name}</Text>
+                        </TouchableOpacity>
+                    </View>
+                )}
+                numColumns={2}>
+            </FlatList>
         )
     } else {
         return (
