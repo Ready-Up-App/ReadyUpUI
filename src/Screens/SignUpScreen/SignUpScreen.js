@@ -22,6 +22,8 @@ const SignUpScreen = ({ navigation }) => {
     const [email, setEmail] = useState("");
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const [firstname, setFirstname] = useState("");
+    const [lastname, setLastname] = useState("");
 
     const [errors, setErrors] = useState({});
 
@@ -43,20 +45,21 @@ const SignUpScreen = ({ navigation }) => {
 
     const signUp = async () => {
         if (validate()) {
-            await signUpCall({email, username, password})
+            await signUpCall({username,email,firstname,lastname,password})
             .then(result => {
-                if (result instanceof Error) {
-                    //error handle
-                    console.log("Error handle");
-                } else {
-                    if (result.success) {
-                        saveOnValidSignUp("result.token");
-                        setIsLoggedIn(true);
-                    } else {
-                        console.log(result.reason)
-                    }
+                if (result.ok) {
+                    saveOnValidSignUp("result.accessToken")
+                    setIsLoggedIn(true);
+                    console.log(result.tokenType);
+                    return result.json()
+                } else if (result.status == 401) {
+                    console.log("Invalid username/password");
                 }
-            });
+            }).then(result => 
+                console.log(result)
+            ).catch(error => 
+                console.log(error)
+            );
         }
     }
 
@@ -74,7 +77,7 @@ const SignUpScreen = ({ navigation }) => {
             errors["email"] = "Please enter an email address."
             console.warn("enter an email for sign up");
         } else if (!emailRegex.test(email)) {
-            valid = false;
+            valid = false; 
             errors["email"] = "Please enter a valid email";
             console.warn("Please enter a valid email");
         }
@@ -99,52 +102,62 @@ const SignUpScreen = ({ navigation }) => {
         }
     }, [formSubmitted]);
 
-    if (formSubmitted){
-        return <LoadScreen/>
-    }else {
-        return (
+    return ( formSubmitted ? <LoadScreen/> :
+        
             <SafeAreaView style={[styles.root, {height: height}]}>
                 
-                <KeyboardAvoidingView style={[styles.mainView, {height: height}]} 
-                    behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+            <KeyboardAvoidingView style={[styles.mainView, {height: height}]} 
+                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
 
-                    <View style={styles.logoView}>
-                        <Image source={Logo} style={[styles.logo, {alignSelf: "center"}]} resizeMode="contain" />
-                    </View>
+                <View style={styles.logoView}>
+                    <Image source={Logo} style={[styles.logo, {alignSelf: "center"}]} resizeMode="contain" />
+                </View>
 
-                    <View style={styles.inputView}>
-                        <SignIn_SignUp_Buttons navigation={navigation} focus={isFocused}/>
-                        <CustomInput
-                            value={username}
-                            setValue={setUsername}
-                            placeholder="Username"
-                            placeholderTextColor="black"
-                        />
-                        <CustomInput
-                            value={email}
-                            setValue={setEmail}
-                            placeholder="Email"
-                            placeholderTextColor="black"
-                        />
-                        <CustomInput
-                            value={password}
-                            setValue={setPassword}
-                            placeholder="Password"
-                            secureTextEntry={true}
-                            placeholderTextColor="black"
-                        />
-                        <CustomButton
-                            text="Sign Up"
-                            onPress={() => setFormSubmitted(true)}
-                            style={{ backgroundColor: Colors.green }}
-                        />
-                    </View>
+                <View style={styles.inputView}>
+                    <SignIn_SignUp_Buttons navigation={navigation} focus={isFocused}/>
+                    <CustomInput
+                        value={username}
+                        setValue={setUsername}
+                        placeholder="Username"
+                        placeholderTextColor="black"
+                    />
+                    <CustomInput
+                        value={email}
+                        setValue={setEmail}
+                        placeholder="Email"
+                        placeholderTextColor="black"
+                    />
+                    <CustomInput
+                        value={firstname}
+                        setValue={setFirstname}
+                        placeholder="Firstname"
+                        placeholderTextColor="black"
+                    />
+                    <CustomInput
+                        value={lastname}
+                        setValue={setLastname}
+                        placeholder="Lastname"
+                        placeholderTextColor="black"
+                    />
+                    <CustomInput
+                        value={password}
+                        setValue={setPassword}
+                        placeholder="Password"
+                        secureTextEntry={true}
+                        placeholderTextColor="black"
+                    />
+                    <CustomButton
+                        text="Sign Up"
+                        onPress={() => setFormSubmitted(true)}
+                        style={{ backgroundColor: Colors.green }}
+                    />
+                </View>
 
-                    </KeyboardAvoidingView>
+            </KeyboardAvoidingView>
 
-            </SafeAreaView>
-        )
-    }
+        </SafeAreaView>
+        
+    )
 }
 
 const styles = StyleSheet.create({

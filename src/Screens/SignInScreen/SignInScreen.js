@@ -30,19 +30,20 @@ const SignInScreen = ({ navigation }) => {
     
     const signIn = async () => {
         if (validate()) {
-            let isEmail = emailRegex.test(username_email);
-            await signInCall({username_email, isEmail, password})
+            // let isEmail = emailRegex.test(username_email);
+            await signInCall({username_email, password})
             .then(result => {
-                if (result instanceof Error) {
-                    //error handle
-                    console.log("Error handle");
-                } else {
-                    if (result.success) {
-                        setIsLoggedIn(true);
-                    }else {
-                        console.log(result.reason);
-                    }
+                if (result.ok) {
+                    setIsLoggedIn(true);
+                } else if (result.status == 401) {
+                    console.log("Invalid username/password");
                 }
+            }).then(result => {
+                let json = result.json()
+                console.log(json)
+            } 
+            ).catch(error => {
+                console.log(error)
             });
         }
     }
