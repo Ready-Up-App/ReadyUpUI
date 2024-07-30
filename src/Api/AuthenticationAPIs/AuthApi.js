@@ -12,8 +12,8 @@ export const signInCall = async (props) => {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
-                username: props.username_email,
-                password: props.password,
+                username: props.form.username,
+                password: props.form.password,
             })
         });
     return result;
@@ -21,6 +21,7 @@ export const signInCall = async (props) => {
 
 export const signUpCall = async (props) => {
 
+    
     const result = await fetch(url.root + url.signUp,
         {
             method: "POST",
@@ -29,11 +30,10 @@ export const signUpCall = async (props) => {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
-                username: props.username,
-                email: props.email.toLowerCase(),
-                firstname: props.firstname,
-                lastname: props.lastname,
-                password: props.password
+                username: props.form.username,
+                email: props.form.email.toLowerCase(),
+                firstname: props.form.firstname,
+                password: props.form.password
             })
         }
     )

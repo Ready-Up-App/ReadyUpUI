@@ -13,14 +13,14 @@ import { useLogin } from "../../AppContext/LoginProvider";
 import Logo from "../../../assets/regularIcon.png";
 import SignIn_SignUp_Buttons from "../../Components/SignIn_SignUp_Buttons/SignIn_SignUp_Buttons";
 import LoadScreen from "../../Components/Loading/LoadScreen";
+import { validateSignIn } from "../../../Utility/FormValidator/FormValidator";
 
 const SignInScreen = ({ navigation }) => {
 
     const { setIsLoggedIn } = useLogin();
     const [formSubmitted, setFormSubmitted] = useState(false);
 
-    const [username_email, setUsername_Email] = useState("");
-    const [password, setPassword] = useState("");
+    const [form, setForm] = useState({ username: "", password: "" })
 
     const [errors, setErrors] = useState({});
 
@@ -30,13 +30,12 @@ const SignInScreen = ({ navigation }) => {
     
     const signIn = async () => {
         if (validate()) {
-            // let isEmail = emailRegex.test(username_email);
-            await signInCall({username_email, password})
+            await signInCall({form})
             .then(result => {
                 if (result.ok) {
                     setIsLoggedIn(true);
                 } else if (result.status == 401) {
-                    console.log("Invalid username/password");
+                    errors["API"] = "Invalid username/password";
                 }
             }).then(result => {
                 let json = result.json()
@@ -48,22 +47,20 @@ const SignInScreen = ({ navigation }) => {
         }
     }
 
+    const handleChange = (name, value) => {
+        setForm(prev => ({
+            ...prev,
+            [name]: value,
+        }))
+    }
+
     const validate = () => {
-        var valid = true;
-
-        if (username_email.trim().length === 0) {
-            valid = false;
-            errors["email"] = "Please enter either a username or an email address."
-            console.warn("enter either a username or an email for sign in");
+        setErrors(validateSignIn(form));
+        if (Object.keys(errors).length > 0) {
+            console.warn("error " + Object.keys(errors))
+            return false;
         }
-
-        if (password.trim().length === 0) {
-            valid = false;
-            errors["password"] = "Please enter an email address."
-            console.warn("enter a password for sign in");
-        }
-
-        return valid;
+        return true;
     }
 
     useEffect(() => {
@@ -84,10 +81,8 @@ const SignInScreen = ({ navigation }) => {
         
     }, [formSubmitted])
 
-    if (formSubmitted) {
-        return <LoadScreen/>
-    } else {
-        return (
+    return (formSubmitted ? <LoadScreen/> :
+
         <SafeAreaView style={[styles.root, {height: height}]}>
             
             <KeyboardAvoidingView style={[styles.mainView, {height: height}]} 
@@ -100,15 +95,15 @@ const SignInScreen = ({ navigation }) => {
                 <View style={styles.inputView}>
                     <SignIn_SignUp_Buttons navigation={navigation} focus={isFocused}/>
                     <CustomInput
-                        value={username_email}
-                        setValue={setUsername_Email}
-                        placeholder="Username or Email"
+                        value={form.username}
+                        setValue={handleChange}
+                        placeholder="Username"
                         placeholderTextColor="black"
                         style={{}}
                     />
                     <CustomInput
-                        value={password}
-                        setValue={setPassword}
+                        value={form.password}
+                        setValue={handleChange}
                         placeholder="Password"
                         placeholderTextColor="black"
                         secureTextEntry={true}
@@ -125,7 +120,6 @@ const SignInScreen = ({ navigation }) => {
 
         </SafeAreaView>
     );
-    }
 }
 
 const styles = StyleSheet.create({

@@ -13,17 +13,15 @@ import Logo from "../../../assets/regularIcon.png";
 import SignIn_SignUp_Buttons from "../../Components/SignIn_SignUp_Buttons";
 import { useLogin } from "../../AppContext/LoginProvider";
 import LoadScreen from "../../Components/Loading/LoadScreen";
+import { validateSignUp } from "../../../Utility/FormValidator/FormValidator";
 
 const SignUpScreen = ({ navigation }) => {
 
     const {setIsLoggedIn} = useLogin();
     const [formSubmitted, setFormSubmitted] = useState(false);
 
-    const [email, setEmail] = useState("");
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
-    const [firstname, setFirstname] = useState("");
-    const [lastname, setLastname] = useState("");
+
+    const [form, setForm] = useState({username:"", password: "", firstname:"", email:""})
 
     const [errors, setErrors] = useState({});
 
@@ -36,24 +34,30 @@ const SignUpScreen = ({ navigation }) => {
     async function saveOnValidSignUp(token) {
         //TODO: find best way to safely store data
         if (await SecureStore.isAvailableAsync()) {
-            await SecureStore.setItemAsync("email", email, options);
-            await SecureStore.setItemAsync("username", username, options);
-            await SecureStore.setItemAsync("password", password, options);
+            await SecureStore.setItemAsync("username", form.username, options);
+            await SecureStore.setItemAsync("password", form.password, options);
             await SecureStore.setItemAsync("token", token, options);
         }
     }
 
+    const handleChange = (name, value) => {
+        setForm(prev => ({
+            ...prev,
+            [name]: value
+        }))
+    }
+
     const signUp = async () => {
         if (validate()) {
-            await signUpCall({username,email,firstname,lastname,password})
+            await signUpCall({form})
             .then(result => {
                 if (result.ok) {
                     saveOnValidSignUp("result.accessToken")
                     setIsLoggedIn(true);
-                    console.log(result.tokenType);
                     return result.json()
                 } else if (result.status == 401) {
-                    console.log("Invalid username/password");
+                    errors["API"] = "Invalid username/password"
+                    // console.log("Invalid username/password");
                 }
             }).then(result => 
                 console.log(result)
@@ -64,31 +68,12 @@ const SignUpScreen = ({ navigation }) => {
     }
 
     const validate = () => {
-        var valid = true;
-
-        if (username.trim().length === 0) {
-            valid = false;
-            errors["username"] = "Please enter a Username."
-            console.warn("enter a username for sign up");
+        setErrors(validateSignUp(form));
+        if (Object.keys(errors).length > 0) {
+            // console.warn("error " + Object.keys(errors))
+            return false;
         }
-
-        if (email.trim().length === 0) {
-            valid = false;
-            errors["email"] = "Please enter an email address."
-            console.warn("enter an email for sign up");
-        } else if (!emailRegex.test(email)) {
-            valid = false; 
-            errors["email"] = "Please enter a valid email";
-            console.warn("Please enter a valid email");
-        }
-
-        if (password.trim().length === 0) {
-            valid = false;
-            errors["password"] = "Please enter password."
-            console.warn("enter a password for sign up");
-        }
-
-        return valid;
+        return true;
     }
 
     useEffect(() => {
@@ -116,32 +101,26 @@ const SignUpScreen = ({ navigation }) => {
                 <View style={styles.inputView}>
                     <SignIn_SignUp_Buttons navigation={navigation} focus={isFocused}/>
                     <CustomInput
-                        value={username}
-                        setValue={setUsername}
-                        placeholder="Username"
-                        placeholderTextColor="black"
-                    />
-                    <CustomInput
-                        value={email}
-                        setValue={setEmail}
-                        placeholder="Email"
-                        placeholderTextColor="black"
-                    />
-                    <CustomInput
-                        value={firstname}
-                        setValue={setFirstname}
+                        value={form.firstname}
+                        setValue={handleChange}
                         placeholder="Firstname"
                         placeholderTextColor="black"
                     />
                     <CustomInput
-                        value={lastname}
-                        setValue={setLastname}
-                        placeholder="Lastname"
+                        value={form.email}
+                        setValue={handleChange}
+                        placeholder="Email"
                         placeholderTextColor="black"
                     />
                     <CustomInput
-                        value={password}
-                        setValue={setPassword}
+                        value={form.username}
+                        setValue={handleChange}
+                        placeholder="Username"
+                        placeholderTextColor="black"
+                    />
+                    <CustomInput
+                        value={form.password}
+                        setValue={handleChange}
                         placeholder="Password"
                         secureTextEntry={true}
                         placeholderTextColor="black"
