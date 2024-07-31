@@ -4,55 +4,40 @@ import * as SecureStore from 'expo-secure-store';
 
 export const signInCall = async (props) => {
 
-    try {
-        const result = await fetch(url.root + url.signIn,
-            {
-                method: "POST",
-                headers: {
-                    "Accept": "application/json",
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    Username_Email: props.username_email,
-                    IsEmail: props.isEmail,
-                    Password: props.password
-                })
-            }
-        ).then(response => 
-            response.json()
-        )
-        return result;
-    } catch (error) {
-        return error;   
-    }
+    const result = await fetch(url.root + url.signIn,
+        {
+            method: "POST",
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                username: props.form.username,
+                password: props.form.password,
+            })
+        });
+    return result;
 }
 
 export const signUpCall = async (props) => {
 
-    try {
-        const result = await fetch(url.root + url.signUp,
-            {
-                method: "POST",
-                withCredentials: true,
-                credentials: "include",
-                headers: {
-                    "Accept": "application/json",
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    Username: props.username,
-                    Email: props.email.toLowerCase(),
-                    Password: props.password
-                })
-            }
-        ).then(response => 
-            response.json()
-        )
-        return result;
-    } catch (error) {
-        return error;
-    }
     
+    const result = await fetch(url.root + url.signUp,
+        {
+            method: "POST",
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                username: props.form.username,
+                email: props.form.email.toLowerCase(),
+                firstname: props.form.firstname,
+                password: props.form.password
+            })
+        }
+    )
+    return result;
 }
 
 export const continuousSignIn = async (props) => {

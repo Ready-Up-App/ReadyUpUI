@@ -12,8 +12,9 @@ const CustomInput = ({ value, setValue, placeholder, secureTextEntry, placeholde
                 placeholder={placeholder}
                 placeholderTextColor={placeholderTextColor}
                 style={styles.input}
-                onChangeText={setValue}
+                onChangeText={(val) => setValue(placeholder.toString().toLowerCase(), val)}
                 secureTextEntry={secureTextEntry}
+                autoCapitalize='none'
             />
         </View>
     )
