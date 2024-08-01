@@ -5,6 +5,7 @@ import { View, SafeAreaView, StyleSheet, Text } from "react-native";
 import Colors from "../../Constants/Colors";
 
 import GroupsView from "../../Components/GroupsView/GroupsView";
+import FriendsView from "../../Components/FriendsView/FriendsView";
 
 const GroupsScreen = () => {
             

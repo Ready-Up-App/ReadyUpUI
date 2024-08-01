@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { SafeAreaView, View, StyleSheet, Image, useWindowDimensions, KeyboardAvoidingView, Platform } from "react-native";
+import * as SecureStore from 'expo-secure-store';
+
 
 import CustomInput from "../../Components/CustomInput";
 import CustomButton from "../../Components/CustomButton/CustomButton";
@@ -7,7 +9,7 @@ import CustomButton from "../../Components/CustomButton/CustomButton";
 import Colors from "../../Constants/Colors";
 import { emailRegex } from "../../Constants/Regex";
 
-import { signInCall } from "../../Api/AuthenticationAPIs/AuthApi";
+import { signInCall } from "../../Api/AuthenticationAPI/AuthApi";
 import { useLogin } from "../../AppContext/LoginProvider";
 
 import Logo from "../../../assets/regularIcon.png";
@@ -28,18 +30,24 @@ const SignInScreen = ({ navigation }) => {
 
     const { height } = useWindowDimensions();
     
+    async function saveOnValidSignIn(token) {
+        //TODO: find best way to safely store data
+        if (await SecureStore.isAvailableAsync()) {
+            await SecureStore.setItemAsync("token", token);
+        }
+    }
+
     const signIn = async () => {
         if (validate()) {
             await signInCall({form})
             .then(result => {
-                if (result.ok) {
-                    setIsLoggedIn(true);
-                } else if (result.status == 401) {
+                if (!result.ok) {
                     errors["API"] = "Invalid username/password";
                 }
+                return result.json();
             }).then(result => {
-                let json = result.json()
-                console.log(json)
+                saveOnValidSignIn(result.accessToken);
+                setIsLoggedIn(true);
             } 
             ).catch(error => {
                 console.log(error)
