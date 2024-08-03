@@ -3,7 +3,6 @@ import { getFriends } from "../../Api/PeopleAPI/PeopleApi";
 import { View, FlatList, StyleSheet, TouchableOpacity, Text } from "react-native";
 
 import Colors from "../../Constants/Colors";
-import { FriendsResponse } from "../../Domain/FriendsResponse";
 import LoadScreen from "../Loading/LoadScreen";
 
 const FriendsView = (props) => {

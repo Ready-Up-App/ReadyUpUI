@@ -1,11 +1,41 @@
-import root from "../urls";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import url from "../urls";
 
-export const getGroupsCall = async (props) => {
+import * as SecureStore from 'expo-secure-store';
+import { asyncGetItem, asyncSetItem } from "../../../Utility/Cache/Cache";
 
-    const result = await fetch("http://universities.hipolabs.com/search?country=United+States",
+
+export const getGroupsCall = async (props) => {    
+
+    var groups = await asyncGetItem("groups")
+    .catch((error) => {
+        return error;
+    })
+
+    if (groups == null) {
+        return callGroupsApi()
+    }
+    return groups;
+    
+}
+
+const callGroupsApi = async () => {
+
+    var token = await SecureStore.getItemAsync("token");
+    const result = await fetch(url.root + url.getJoinable,
         {
             method: "GET",
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + token.toString()
+            }
         }
-    )
-    return result.json();
+    ).then((result) => {
+        if(result.ok) {
+            asyncSetItem("groups", result.clone())
+            return result.json();
+        }
+    });
+    return result;
 }

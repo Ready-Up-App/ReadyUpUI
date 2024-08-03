@@ -6,6 +6,7 @@ import Colors from "../../Constants/Colors"
 
 import LoadScreen from "../Loading/LoadScreen"
 
+
 const GroupsView = ({ style, selectGroup}) => {
 
     const [groups, setGroups] = useState([]);
@@ -32,14 +33,13 @@ const GroupsView = ({ style, selectGroup}) => {
         showLoading();
         setSelectedGroup("");
         getGroupsCall()
-        .then((result) => {
-            if(!isCancelled) {
-                setGroups(result)
-                hideLoading();
-            }
-        }).catch((error) => {
-            console.error(error)
+        .then((groups) => {
+            setGroups(groups);
+            hideLoading();
         })
+        .catch((error) => {
+            console.error(error)
+        });
             
         return () => {
             isCancelled = true;

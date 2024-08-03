@@ -1,33 +1,33 @@
 import React, { useEffect, useState } from "react";
 
-import { View, SafeAreaView, StyleSheet, Text, TouchableOpacity } from "react-native";
+    import { View, SafeAreaView, StyleSheet, Text, TouchableOpacity } from "react-native";
+    
+    import Colors from "../../Constants/Colors";
+    
+    import GroupsView from "../../Components/GroupsView/GroupsView";
+    import ThreeLineButton from "../../Components/ThreeLineButton";
+import FriendsView from "../../Components/FriendsView/FriendsView";
 
-import Colors from "../../Constants/Colors";
-
-import GroupsView from "../../Components/GroupsView/GroupsView";
-import ThreeLineButton from "../../Components/ThreeLineButton";
-
-const GroupsScreen = ({navigation}) => {
-            
-    const [selectedGroup, setSelectedGroup] = useState();
-
-    const updateSelectedGroup = (group) => {
-        setSelectedGroup(group);
-    }
-
+const FriendScreen = ({navigation}) => {
+     
+    
     return (
         <SafeAreaView style={styles.root}>
             <View style={styles.banner}>
-                <ThreeLineButton onPress={() => navigation.navigate("FriendsList")}/>
-                <Text style={{flex: 1}}>Groups</Text>
+                <ThreeLineButton onPress={() => navigation.navigate("Groups")}/>
+                <Text style={{flex: 1}}>Friends</Text>
             </View>
             <View style={styles.topView}>
-                <GroupsView style={styles.groupsView} selectGroup={updateSelectedGroup}/>
+                <FriendsView style={styles.friendsView} />
             </View>
             <View style={styles.bottomView}>
             </View>
         </SafeAreaView>
     )
+        
+        
+        
+
 }
 
 const styles = StyleSheet.create({
@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
         flexDirection: "row"
     },
-    groupsView: {
+    friendsView: {
         flex: 8,
         backgroundColor: Colors.blueGray
     },
@@ -60,4 +60,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default GroupsScreen;
+export default FriendScreen;
