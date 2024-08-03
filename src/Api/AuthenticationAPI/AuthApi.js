@@ -15,7 +15,8 @@ export const signInCall = async (props) => {
                 username: props.form.username,
                 password: props.form.password,
             })
-        });
+        }
+    );
     return result;
 }
 

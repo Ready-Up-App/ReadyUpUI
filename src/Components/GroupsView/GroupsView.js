@@ -1,10 +1,11 @@
 import { useEffect, useState, useMemo } from "react"
 import { View, FlatList, StyleSheet, TouchableOpacity, Text } from "react-native"
 
-import { getGroupsCall } from "../../Api/GroupsAPIs/GroupsAPI"
+import { getGroupsCall } from "../../Api/GroupsAPI/GroupsApi"
 import Colors from "../../Constants/Colors"
 
 import LoadScreen from "../Loading/LoadScreen"
+
 
 const GroupsView = ({ style, selectGroup}) => {
 
@@ -31,49 +32,50 @@ const GroupsView = ({ style, selectGroup}) => {
         let isCancelled = false;
         showLoading();
         setSelectedGroup("");
-        try {
-            getGroupsCall()
-            .then((result) => {
-                if(!isCancelled) {
-                    setGroups(result)
-                    hideLoading();
-                }
-            })
+        getGroupsCall()
+        .then((groups) => {
+            setGroups(groups);
+            hideLoading();
+        })
+        .catch((error) => {
+            console.error(error)
+        });
             
-        } catch (error) {
-            console.log(error);
-        }
         return () => {
             isCancelled = true;
         }
     }, [])
 
 
-    if(isLoading) {
-        return (<LoadScreen/>) 
-    } else if (selectedGroup === ""){
-        return (
-            <FlatList 
-                style={styles.itemContainer}
-                data={groups}
-                renderItem={({item}) => (
-                    <View style={{flex: 1}}> 
-                        <TouchableOpacity style={styles.items} 
-                        onPress={() => select(item.name)}>
-                            <Text>{item.name}</Text>
-                        </TouchableOpacity>
-                    </View>
-                )}
-                numColumns={2}>
-            </FlatList>
-        )
-    } else {
-        return (
-            <View>
-                <Text>{selectedGroup}</Text>
-            </View>
-        )    
-    }
+    return (isLoading ? <LoadScreen/> :
+        
+        selectedGroup === "" ? 
+        <FlatList 
+            style={styles.itemContainer}
+            data={groups}
+            renderItem={({item}) => (
+                <View style={{flex: 1}}> 
+                    <TouchableOpacity style={styles.items} 
+                    onPress={() => select(item.name)}>
+                        <Text>{item.name}</Text>
+                    </TouchableOpacity>
+                </View>
+            )}
+            numColumns={1}>
+        </FlatList>
+        :
+        <View>
+            <TouchableOpacity
+                style={styles.items} 
+                onPress={() => select("")}>
+                <Text>BACK</Text>
+            </TouchableOpacity>
+            <Text>{selectedGroup}</Text>
+        </View>
+        
+            
+    );
+        
 }
 
 const styles = StyleSheet.create({

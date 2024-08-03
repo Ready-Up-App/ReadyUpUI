@@ -5,7 +5,7 @@ import * as SecureStore from 'expo-secure-store';
 import CustomInput from "../../Components/CustomInput";
 import CustomButton from "../../Components/CustomButton/CustomButton";
 
-import { signUpCall } from "../../Api/AuthenticationAPIs/AuthApi";
+import { signUpCall } from "../../Api/AuthenticationAPI/AuthApi";
 import Colors from "../../Constants/Colors";
 import { emailRegex } from "../../Constants/Regex";
 
@@ -52,7 +52,7 @@ const SignUpScreen = ({ navigation }) => {
             await signUpCall({form})
             .then(result => {
                 if (result.ok) {
-                    saveOnValidSignUp("result.accessToken")
+                    saveOnValidSignUp(result.accessToken)
                     setIsLoggedIn(true);
                     return result.json()
                 } else if (result.status == 401) {

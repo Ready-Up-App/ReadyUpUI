@@ -2,24 +2,25 @@ import React, { useEffect, useState } from "react";
 
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
-import GroupsScreen from "../Screens/GroupsScreen";
 import SignInScreen from "../Screens/SignInScreen/SignInScreen";
 import SignUpScreen from "../Screens/SignUpScreen/SignUpScreen";
 
 import { useLogin } from "../AppContext/LoginProvider";
 
-import * as SplashScreen from 'expo-splash-screen';
-import * as SecureStore from 'expo-secure-store';
+import GroupsScreen from "../Screens/GroupsScreen";
+import FriendsScreen from "../Screens/FriendsScreen";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Stack = createNativeStackNavigator();
 const AuthStack = createNativeStackNavigator();
 
-// SplashScreen.show();
 
 const AppNavigation = () => {
+
     return (
         <Stack.Navigator screenOptions={{ headerShown: false, animation: "none" }}>
-            <Stack.Screen component={GroupsScreen} name="GroupsScreen" />
+            <Stack.Screen name="FriendsList" component={FriendsScreen} />
+            <Stack.Screen name="Groups" component={GroupsScreen} />
         </Stack.Navigator>
     )
 }
