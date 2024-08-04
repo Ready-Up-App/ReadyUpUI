@@ -31,6 +31,7 @@ const styles = StyleSheet.create({
 
         paddingVertical: 10,
         marginVertical: 5,
+        justifyContent: "center",
     },
     input: {
         textAlign: "center",

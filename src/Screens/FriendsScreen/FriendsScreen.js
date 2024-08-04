@@ -1,24 +1,41 @@
 import React, { useEffect, useState } from "react";
 
-    import { View, SafeAreaView, StyleSheet, Text, TouchableOpacity } from "react-native";
-    
-    import Colors from "../../Constants/Colors";
-    
-    import GroupsView from "../../Components/GroupsView/GroupsView";
-    import ThreeLineButton from "../../Components/ThreeLineButton";
+import { View, SafeAreaView, StyleSheet, Text, TouchableOpacity } from "react-native";
+
+import Colors from "../../Constants/Colors";
+
+import ThreeLineButton from "../../Components/ThreeLineButton";
 import FriendsView from "../../Components/FriendsView/FriendsView";
+import SearchPeopleView from "../../Components/SearchPeopleView";
 
 const FriendScreen = ({navigation}) => {
      
     
+    const [toggleSearch, setToggleSearch] = useState(false)
+
+    const toggleSearchChange = () => {
+        setToggleSearch(prev => (!prev));
+    }
+
+    const navigateAway = () => {
+        setToggleSearch(false);
+        navigation.navigate("Groups")
+    }
+
     return (
         <SafeAreaView style={styles.root}>
             <View style={styles.banner}>
-                <ThreeLineButton onPress={() => navigation.navigate("Groups")}/>
-                <Text style={{flex: 1}}>Friends</Text>
+                <View><ThreeLineButton onPress={navigateAway}/></View>
+                <Text>Friends</Text>
+                <View><ThreeLineButton onPress={toggleSearchChange}/></View>
             </View>
             <View style={styles.topView}>
-                <FriendsView style={styles.friendsView} />
+                {toggleSearch ? 
+                    <SearchPeopleView/>
+                :
+                    <FriendsView />
+                }
+                
             </View>
             <View style={styles.bottomView}>
             </View>
@@ -44,9 +61,9 @@ const styles = StyleSheet.create({
     banner: {
         flex: 1,
         backgroundColor: Colors.black,
-        justifyContent: "center",
+        justifyContent: "flex-start",
         alignItems: "center",
-        flexDirection: "row"
+        flexDirection: "row",
     },
     friendsView: {
         flex: 8,
@@ -58,6 +75,15 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         backgroundColor: Colors.black
     },
+    bannerTitle: {
+        flex: 1,
+        justifyContent: "center",
+        alignContent: "center",
+        alignItems: "center",
+        alignSelf: "center",
+        flexBasis: "auto"
+        // marginStart: "33.333%"
+    }
 });
 
 export default FriendScreen;

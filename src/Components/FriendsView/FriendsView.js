@@ -23,10 +23,6 @@ const FriendsView = (props) => {
         showLoading();
         getFriends()
         .then((result) => {
-            if(!isCancelled && result.ok) {
-                return result.json();
-            }
-        }).then((result) => {
             setFriends(result.friends)
             hideLoading();
         }).catch((error) => {

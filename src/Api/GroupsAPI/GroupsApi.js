@@ -22,7 +22,7 @@ export const getGroupsCall = async (props) => {
 const callGroupsApi = async () => {
 
     var token = await SecureStore.getItemAsync("token");
-    const result = await fetch(url.root + url.getJoinable,
+    const result = await fetch(url.getJoinable,
         {
             method: "GET",
             headers: {

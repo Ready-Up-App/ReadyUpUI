@@ -7,7 +7,6 @@ import CustomButton from "../../Components/CustomButton/CustomButton";
 
 import { signUpCall } from "../../Api/AuthenticationAPI/AuthApi";
 import Colors from "../../Constants/Colors";
-import { emailRegex } from "../../Constants/Regex";
 
 import Logo from "../../../assets/regularIcon.png";
 import SignIn_SignUp_Buttons from "../../Components/SignIn_SignUp_Buttons";

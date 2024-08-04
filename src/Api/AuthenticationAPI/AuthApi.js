@@ -4,7 +4,7 @@ import * as SecureStore from 'expo-secure-store';
 
 export const signInCall = async (props) => {
 
-    const result = await fetch(url.root + url.signIn,
+    const result = await fetch(url.signIn,
         {
             method: "POST",
             headers: {

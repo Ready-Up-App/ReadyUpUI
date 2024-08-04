@@ -1,11 +1,26 @@
 import url from "../urls";
 import * as SecureStore from 'expo-secure-store';
+import { asyncGetItem, asyncSetItem } from "../../../Utility/Cache/Cache";
 
 
 export const getFriends = async (props) => {
+
+    var friends = await asyncGetItem("friends")
+    .catch((error) => {
+        return error;
+    })
+
+    if (friends == null) {
+        return callGetFriendsApi();
+    }
+    return friends;    
+}
+
+const callGetFriendsApi = async () => {
+
     var token = await SecureStore.getItemAsync("token");
 
-    const result = await fetch(url.root + url.getFriends, 
+    const result = await fetch(url.getFriends, 
         {
             method: "GET",
             headers: {
@@ -14,6 +29,31 @@ export const getFriends = async (props) => {
                 "Authorization": "Bearer " + token.toString()
             }
         }
+    ).then((result) => {
+        if(result.ok) {
+            asyncSetItem("friends", result.clone())
+            return result.json();
+        }
+    });
+    return result;
+}
+
+export const searchPeople = async (username) => {
+    var token = await SecureStore.getItemAsync("token");
+    
+    const result = await fetch(url.searchPerson,
+        {
+            method: "POST",
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + token.toString()
+            },
+            body: JSON.stringify({
+                username: username
+            })
+        }
     );
     return result;
+
 }
