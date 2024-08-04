@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from "react";
 
-import { Text, StyleSheet, Pressable } from "react-native";
+import { Text, StyleSheet, Pressable, TouchableOpacity } from "react-native";
 
 import Colors from "../../Constants/Colors";
 
 const CustomButton = ({ onPress, text, style }) => {
 
     return (
-        <Pressable
+        <TouchableOpacity
             onPress={onPress}
             style={[styles.container, style]}
         >
             <Text style={styles.text}>{text}</Text>
-        </Pressable>
+        </TouchableOpacity>
     );
 }
 

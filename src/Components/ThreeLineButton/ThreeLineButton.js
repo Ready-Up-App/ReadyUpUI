@@ -5,13 +5,16 @@ import Colors from "../../Constants/Colors";
 const ThreeLineButton = ({onPress}) => {
 
     return (
-        <TouchableOpacity 
-        onPress={onPress}
-        style={styles.root}>
-            <View style={styles.item}/>
-            <View style={styles.item}/>
-            <View style={styles.item}/>
-        </TouchableOpacity>
+        <View style={styles.root}>
+            <TouchableOpacity 
+            onPress={onPress}
+            style={styles.button}>
+
+                <View style={styles.item}/>
+                <View style={styles.item}/>
+                <View style={styles.item}/>
+            </TouchableOpacity>
+        </View>
 
     );
 }
@@ -20,11 +23,15 @@ const ThreeLineButton = ({onPress}) => {
 
 const styles = StyleSheet.create({
     root: {
-        // flex: 0.3,
-        margin: 4,
+        // display: "none",
+    },
+    button: {
+        // flexBasis: 0,
+        // flex: 0.1,
+        // margin: 4,
         flexDirection: "column",
-        padding: 4,
-        opacity: 0.5
+        // padding: 4,
+        opacity: 0.5,
     }, 
     item: {
         borderRadius: 10,

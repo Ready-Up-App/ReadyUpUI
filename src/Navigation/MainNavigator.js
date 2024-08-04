@@ -9,7 +9,7 @@ import { useLogin } from "../AppContext/LoginProvider";
 
 import GroupsScreen from "../Screens/GroupsScreen";
 import FriendsScreen from "../Screens/FriendsScreen";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import SearchPeopleView from "../Components/SearchPeopleView";
 
 const Stack = createNativeStackNavigator();
 const AuthStack = createNativeStackNavigator();
@@ -19,8 +19,8 @@ const AppNavigation = () => {
 
     return (
         <Stack.Navigator screenOptions={{ headerShown: false, animation: "none" }}>
-            <Stack.Screen name="FriendsList" component={FriendsScreen} />
             <Stack.Screen name="Groups" component={GroupsScreen} />
+            <Stack.Screen name="FriendsList" component={FriendsScreen} />
         </Stack.Navigator>
     )
 }
