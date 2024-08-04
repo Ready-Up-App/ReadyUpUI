@@ -15,6 +15,7 @@ const SearchPeopleView = (props) => {
     const [loading, setLoading] = useState(false);
     const [username, setUsername] = useState("");
     const [foundPeople, setFoundPeople] = useState({});
+    const [selectedFriend, setSelectedFriend] = useState(null);
 
     const [formSubmitted, setFormSubmitted] = useState(false);
 
@@ -24,6 +25,11 @@ const SearchPeopleView = (props) => {
 
     const submit = () => {
         setFormSubmitted(true)
+    }
+
+
+    const selectFriend = (friend) => {
+        setSelectedFriend(friend);
     }
 
     useEffect(() => {
@@ -69,16 +75,20 @@ const SearchPeopleView = (props) => {
             
             </View>
 
-            {loading ? <LoadScreen/> : 
+            { loading ? <LoadScreen/> : 
             
                 <FlatList style={styles.foundPeopleContainer}
                     data={foundPeople}
                     renderItem={({item}) => (
                         <View style={{flex: 1}}> 
                             <TouchableOpacity style={styles.items}
-                            // onPress={() => select(item.name)}
-                            >
+                                onPress={selectFriend(item)}>
                                 <Text>{item.username}</Text>
+                                { selectedFriend!=null ? 
+                                    selectedFriend.username == item.username ? 
+                                        <CustomButton/>
+                                    :<></>: <></>
+                                }
                             </TouchableOpacity>
                         </View>
                     )}/>

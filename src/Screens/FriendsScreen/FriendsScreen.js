@@ -31,7 +31,7 @@ const FriendScreen = ({navigation}) => {
             </View>
             <View style={styles.topView}>
                 {toggleSearch ? 
-                    <SearchPeopleView/>
+                    <SearchPeopleView />
                 :
                     <FriendsView />
                 }
