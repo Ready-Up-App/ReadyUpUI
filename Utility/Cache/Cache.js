@@ -8,12 +8,12 @@ export const asyncSetItem = async (key, item, ttl) => {
     }
 
     const now = new Date();
-    now.setMinutes(now.getMinutes() + ttl);
-    const ttlMins = Math.floor(now.getTime() / 1000);
+    now.setSeconds(now.getSeconds() + ttl);
+    const ttlSec = Math.floor(now.getTime() / 1000);
     dataItem = await item.json();
     const data = {
         item: dataItem,
-        ttl: ttlMins
+        ttl: ttlSec
     }
 
     AsyncStorage.setItem(key, JSON.stringify(data));
@@ -37,3 +37,6 @@ export const asyncGetItem = async (key) => {
     })
 }
 
+export const asyncDeleteItem = async (key) => {
+    AsyncStorage.removeItem(key);
+}

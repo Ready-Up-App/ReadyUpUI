@@ -28,3 +28,12 @@ export function validateSignIn(form) {
     
     return errors;
 }
+
+export function validateSearchFriend(form) {
+    var errors = {}
+
+    if (form.trim().length === 0) {
+        errors["username"] = "Must enter a username."
+    }
+    return errors;
+}
