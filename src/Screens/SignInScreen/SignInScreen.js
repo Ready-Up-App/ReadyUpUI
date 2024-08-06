@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { SafeAreaView, View, StyleSheet, Image, useWindowDimensions, KeyboardAvoidingView, Platform } from "react-native";
+import { SafeAreaView, View, StyleSheet, Image, useWindowDimensions, KeyboardAvoidingView, Platform, Text } from "react-native";
 import * as SecureStore from 'expo-secure-store';
 
 
@@ -16,6 +16,7 @@ import Logo from "../../../assets/regularIcon.png";
 import SignIn_SignUp_Buttons from "../../Components/SignIn_SignUp_Buttons/SignIn_SignUp_Buttons";
 import LoadScreen from "../../Components/Loading/LoadScreen";
 import { validateSignIn } from "../../../Utility/FormValidator/FormValidator";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const SignInScreen = ({ navigation }) => {
 
@@ -74,6 +75,7 @@ const SignInScreen = ({ navigation }) => {
     useEffect(() => {
         let isCancelled = false;
         if (formSubmitted) {
+            AsyncStorage.clear()
             signIn()
             .then(() =>{
                 if (!isCancelled){
@@ -136,7 +138,7 @@ const styles = StyleSheet.create({
         flex: 1,
     }, 
     mainView: {
-        justifyContent: "row",
+        flexDirection: "column",
         alignItems: "center",
 
     },

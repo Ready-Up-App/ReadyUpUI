@@ -5,7 +5,6 @@ import { View, SafeAreaView, StyleSheet, Text, TouchableOpacity } from "react-na
 import Colors from "../../Constants/Colors";
 
 import GroupsView from "../../Components/GroupsView/GroupsView";
-import ThreeLineButton from "../../Components/ThreeLineButton";
 
 const GroupsScreen = ({navigation}) => {
             
@@ -18,8 +17,10 @@ const GroupsScreen = ({navigation}) => {
     return (
         <SafeAreaView style={styles.root}>
             <View style={styles.banner}>
-                <ThreeLineButton onPress={() => navigation.navigate("FriendsList")}/>
-                <Text style={{flex: 1}}>Groups</Text>
+                <TouchableOpacity onPress={() => navigation.navigate("FriendsList")} style={styles.friendsButton}>
+                    <Text>Friends</Text>
+                </TouchableOpacity>
+                <Text style={styles.bannerTitle}>Groups</Text>
             </View>
             <View style={styles.topView}>
                 <GroupsView style={styles.groupsView} selectGroup={updateSelectedGroup}/>
@@ -31,11 +32,11 @@ const GroupsScreen = ({navigation}) => {
 }
 
 const styles = StyleSheet.create({
-    root: {
-        backgroundColor: Colors.black,
-        flex: 1,
-        flexDirection: "column",
-    }, 
+root: {
+    backgroundColor: Colors.black,
+    flex: 1,
+    flexDirection: "column",
+}, 
     topView: {
         flex: 10,
         backgroundColor: Colors.blueGray,
@@ -44,10 +45,20 @@ const styles = StyleSheet.create({
     banner: {
         flex: 1,
         backgroundColor: Colors.black,
-        justifyContent: "center",
+        justifyContent: "flex-start",
         alignItems: "center",
-        flexDirection: "row"
+        flexDirection: "row",
     },
+        bannerTitle: {
+            width: "62.6%",
+            justifyContent: "center",
+            alignContent: "center",
+            textAlign: "center"
+        },
+        friendsButton: {
+            backgroundColor: Colors.blue,
+            margin: "4%",
+        },
     groupsView: {
         flex: 8,
         backgroundColor: Colors.blueGray
@@ -58,6 +69,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         backgroundColor: Colors.black
     },
+    
 });
 
 export default GroupsScreen;

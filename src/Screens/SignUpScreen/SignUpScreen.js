@@ -13,6 +13,7 @@ import SignIn_SignUp_Buttons from "../../Components/SignIn_SignUp_Buttons";
 import { useLogin } from "../../AppContext/LoginProvider";
 import LoadScreen from "../../Components/Loading/LoadScreen";
 import { validateSignUp } from "../../../Utility/FormValidator/FormValidator";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const SignUpScreen = ({ navigation }) => {
 
@@ -76,6 +77,7 @@ const SignUpScreen = ({ navigation }) => {
     }
 
     useEffect(() => {
+        AsyncStorage.clear();
         if (formSubmitted) {
             signUp()
             .then(() =>{
@@ -144,7 +146,7 @@ const styles = StyleSheet.create({
         flex: 1,
     }, 
     mainView: {
-        justifyContent: "row",
+        flexDirection: "column",
         alignItems: "center",
 
     },

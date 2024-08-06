@@ -39,6 +39,10 @@ const callGetFriendsApi = async () => {
 }
 
 export const searchPeople = async (username) => {
+    if (username === undefined || username.length == 0) {
+        return null;
+    }
+
     var token = await SecureStore.getItemAsync("token");
     
     const result = await fetch(url.searchPerson,
@@ -55,5 +59,23 @@ export const searchPeople = async (username) => {
         }
     );
     return result;
+}
 
+export const sendFriendRequest = async (username) => {
+    var token = await SecureStore.getItemAsync("token");
+    
+    const result = await fetch(url.sendFriendRequest,
+        {
+            method: "POST",
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + token.toString()
+            },
+            body: JSON.stringify({
+                toUsername: username
+            })
+        }
+    );
+    return result;
 }

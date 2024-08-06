@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
 
-import { View, SafeAreaView, StyleSheet, Text, TouchableOpacity } from "react-native";
+import { View, SafeAreaView, StyleSheet, Text, TouchableOpacity, KeyboardAvoidingView, Platform } from "react-native";
 
 import Colors from "../../Constants/Colors";
 
-import ThreeLineButton from "../../Components/ThreeLineButton";
 import FriendsView from "../../Components/FriendsView/FriendsView";
 import SearchPeopleView from "../../Components/SearchPeopleView";
 
@@ -17,17 +16,26 @@ const FriendScreen = ({navigation}) => {
         setToggleSearch(prev => (!prev));
     }
 
-    const navigateAway = () => {
+    const goToGroups = () => {
         setToggleSearch(false);
         navigation.navigate("Groups")
     }
 
     return (
-        <SafeAreaView style={styles.root}>
+        <KeyboardAvoidingView style={styles.root}
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
+            enabled={false}>
+
             <View style={styles.banner}>
-                <View><ThreeLineButton onPress={navigateAway}/></View>
-                <Text>Friends</Text>
-                <View><ThreeLineButton onPress={toggleSearchChange}/></View>
+                <TouchableOpacity style={styles.bannerGroupsButton} onPress={goToGroups}>
+                    <Text style={{}}>Groups</Text>
+
+                </TouchableOpacity>
+                <Text style={styles.bannerTitle}>Friends</Text>
+                <TouchableOpacity style={styles.searchFriendsButton} onPress={toggleSearchChange}>
+                    <Text style={{}}>Search</Text>
+
+                </TouchableOpacity>
             </View>
             <View style={styles.topView}>
                 {toggleSearch ? 
@@ -39,7 +47,7 @@ const FriendScreen = ({navigation}) => {
             </View>
             <View style={styles.bottomView}>
             </View>
-        </SafeAreaView>
+        </KeyboardAvoidingView>
     )
         
         
@@ -48,11 +56,11 @@ const FriendScreen = ({navigation}) => {
 }
 
 const styles = StyleSheet.create({
-    root: {
-        backgroundColor: Colors.black,
-        flex: 1,
-        flexDirection: "column",
-    }, 
+root: {
+    backgroundColor: Colors.black,
+    flex: 1,
+    flexDirection: "column",
+}, 
     topView: {
         flex: 10,
         backgroundColor: Colors.blueGray,
@@ -61,10 +69,32 @@ const styles = StyleSheet.create({
     banner: {
         flex: 1,
         backgroundColor: Colors.black,
-        justifyContent: "flex-start",
+        // justifyContent: "space-evenly",
         alignItems: "center",
         flexDirection: "row",
     },
+        bannerTitle: {
+            justifyContent: "center",
+            alignContent: "center",
+            textAlign: "center",
+            alignSelf: "center",
+            width: "62.6%"
+        },
+        bannerGroupsButton: {
+            backgroundColor: Colors.blue,
+            // aspectRatio: 1,
+            // height: "40%",
+            // borderRadius: 100,
+            margin: "4%"
+        },
+        searchFriendsButton: {
+            backgroundColor: Colors.blue,
+            // aspectRatio: 1,
+            // height: "40%",
+            // borderRadius: 100,
+            margin: "4%"
+
+        },
     friendsView: {
         flex: 8,
         backgroundColor: Colors.blueGray
@@ -75,15 +105,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         backgroundColor: Colors.black
     },
-    bannerTitle: {
-        flex: 1,
-        justifyContent: "center",
-        alignContent: "center",
-        alignItems: "center",
-        alignSelf: "center",
-        flexBasis: "auto"
-        // marginStart: "33.333%"
-    }
+    
 });
 
 export default FriendScreen;
