@@ -36,7 +36,6 @@ const SearchPeopleView = (props) => {
             setLoading(true);
             searchPeople(username)
             .then((result) => {
-                console.warn(result)
 
                 if(result == null) {
                     return [];
@@ -154,7 +153,7 @@ const styles = StyleSheet.create({
         padding: 15,
         marginVertical: 25,
         alignItems: "center",
-        opacity: 0.1,
+        opacity: 0.5,
         activeOpacity: 0.5,
     },
     buttonContainer: {

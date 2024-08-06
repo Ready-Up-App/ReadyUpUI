@@ -70,7 +70,6 @@ const SignUpScreen = ({ navigation }) => {
     const validate = () => {
         setErrors(validateSignUp(form));
         if (Object.keys(errors).length > 0) {
-            // console.warn("error " + Object.keys(errors))
             return false;
         }
         return true;

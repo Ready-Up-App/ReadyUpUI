@@ -31,7 +31,6 @@ export function validateSignIn(form) {
 
 export function validateSearchFriend(form) {
     var errors = {}
-    // console.warn(form);
 
     if (form.trim().length === 0) {
         errors["username"] = "Must enter a username."

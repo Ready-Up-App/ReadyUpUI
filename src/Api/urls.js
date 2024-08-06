@@ -16,7 +16,8 @@ const url = {
 
     getFriends: endpoints.person + "/getFriends",
     searchPerson: endpoints.person + "/searchUsername",
-    sendFriendRequest: endpoints.person + "/friendRequest"
+    sendFriendRequest: endpoints.person + "/friendRequest",
+    respondFriendRequest: endpoints.person + "/respondFriendRequest",
 }
 
 export default url;
