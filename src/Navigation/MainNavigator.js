@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
@@ -9,7 +9,7 @@ import { useLogin } from "../AppContext/LoginProvider";
 
 import GroupsScreen from "../Screens/GroupsScreen";
 import FriendsScreen from "../Screens/FriendsScreen";
-import SearchPeopleView from "../Components/SearchPeopleView";
+import SettingsScreen from "../Screens/SettingsScreen";
 
 const Stack = createNativeStackNavigator();
 const AuthStack = createNativeStackNavigator();
@@ -21,6 +21,7 @@ const AppNavigation = () => {
         <Stack.Navigator screenOptions={{ headerShown: false, animation: "none" }}>
             <Stack.Screen name="Groups" component={GroupsScreen} />
             <Stack.Screen name="FriendsList" component={FriendsScreen} />
+            <Stack.Screen name="Settings" component={SettingsScreen} />
         </Stack.Navigator>
     )
 }
