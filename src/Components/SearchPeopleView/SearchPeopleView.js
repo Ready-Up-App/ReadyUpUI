@@ -26,8 +26,13 @@ const SearchPeopleView = (props) => {
     }
 
 
-    const handleFriendRequest = (item, person) => {
+    const handleFriendRequest = (person, index) => {
         sendFriendRequest(person.username)
+        person.available = false;
+        let newArr = [...foundPeople];
+        newArr[index] = person;
+
+        setFoundPeople(newArr);   
     }
 
     useEffect(() => {
@@ -86,18 +91,19 @@ const SearchPeopleView = (props) => {
                         :
                             <FlatList style={styles.foundPeopleContainer}
                                 data={foundPeople}
-                                renderItem={({item}) => (
+                                renderItem={({item, index}) => (
                                     <View style={styles.items}> 
                                         <Text>{item.username}</Text>
                                         
                                         <View style={styles.buttonContainer}>
                                             <TouchableOpacity style={item.available ? styles.friendRequestButton : styles.inactiveButton}
-                                                onPress={(self) => handleFriendRequest(self,item)}
+                                                onPress={() => handleFriendRequest(item, index)}
                                                 disabled={item.available ? false : true}
                                             />
                                         </View>
-                                    </View>                                
-                                )}/>
+                                    </View>
+                                )}
+                                ItemSeparatorComponent={() => <View style={{borderWidth:1}}/>}/>
                 }
             </View>
             
