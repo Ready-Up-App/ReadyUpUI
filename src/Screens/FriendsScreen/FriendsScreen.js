@@ -6,6 +6,8 @@ import Colors from "../../Constants/Colors";
 
 import FriendsView from "../../Components/FriendsView/FriendsView";
 import SearchPeopleView from "../../Components/SearchPeopleView";
+import BottomView from "../../Components/BottomView";
+import { ConstStyles } from "../../Constants/Styles";
 
 const FriendScreen = ({navigation}) => {
      
@@ -26,7 +28,7 @@ const FriendScreen = ({navigation}) => {
             behavior={Platform.OS === "ios" ? "padding" : "height"}
             enabled={false}>
 
-            <View style={styles.banner}>
+            <View style={ConstStyles.banner}>
                 <TouchableOpacity style={styles.bannerGroupsButton} onPress={goToGroups}>
                     <Text style={{}}>Groups</Text>
 
@@ -37,7 +39,7 @@ const FriendScreen = ({navigation}) => {
 
                 </TouchableOpacity>
             </View>
-            <View style={styles.topView}>
+            <View style={ConstStyles.topView}>
                 {toggleSearch ? 
                     <SearchPeopleView />
                 :
@@ -45,8 +47,7 @@ const FriendScreen = ({navigation}) => {
                 }
                 
             </View>
-            <View style={styles.bottomView}>
-            </View>
+            <BottomView navigation={navigation}/>
         </KeyboardAvoidingView>
     )
         

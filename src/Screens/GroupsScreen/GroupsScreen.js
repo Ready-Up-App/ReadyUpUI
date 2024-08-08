@@ -5,6 +5,8 @@ import { View, SafeAreaView, StyleSheet, Text, TouchableOpacity } from "react-na
 import Colors from "../../Constants/Colors";
 
 import GroupsView from "../../Components/GroupsView/GroupsView";
+import BottomView from "../../Components/BottomView";
+import { ConstStyles } from "../../Constants/Styles";
 
 const GroupsScreen = ({navigation}) => {
             
@@ -16,17 +18,16 @@ const GroupsScreen = ({navigation}) => {
 
     return (
         <SafeAreaView style={styles.root}>
-            <View style={styles.banner}>
+            <View style={ConstStyles.banner}>
                 <TouchableOpacity onPress={() => navigation.navigate("FriendsList")} style={styles.friendsButton}>
                     <Text>Friends</Text>
                 </TouchableOpacity>
                 <Text style={styles.bannerTitle}>Groups</Text>
             </View>
-            <View style={styles.topView}>
+            <View style={ConstStyles.topView}>
                 <GroupsView style={styles.groupsView} selectGroup={updateSelectedGroup}/>
             </View>
-            <View style={styles.bottomView}>
-            </View>
+            <BottomView navigation={navigation}/>
         </SafeAreaView>
     )
 }

@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import CustomInput from "../CustomInput/CustomInput";
 import { View, StyleSheet, Text, TouchableOpacity, KeyboardAvoidingView, Keyboard } from "react-native";
-import CustomButton from "../CustomButton/CustomButton";
 import { FlatList } from "react-native-gesture-handler";
 import Colors from "../../Constants/Colors";
 import { searchPeople, sendFriendRequest } from "../../Api/PeopleAPI/PeopleApi";
 import LoadScreen from "../Loading/LoadScreen";
+import { ConstStyles } from "../../Constants/Styles";
 
 const SearchPeopleView = (props) => {
 
@@ -59,7 +59,7 @@ const SearchPeopleView = (props) => {
 
     return (
 
-        <View style={styles.root}>
+        <View style={ConstStyles.root}>
             <View style={styles.searchBarRoot}>
         
                 <CustomInput 
@@ -78,26 +78,28 @@ const SearchPeopleView = (props) => {
             
             </View>
 
-            { 
-                loading ? <LoadScreen/> :
-                    foundPeople.length == 0 ? 
-                        <Text>NO DATA FOUND</Text>
-                    :
-                        <FlatList style={styles.foundPeopleContainer}
-                            data={foundPeople}
-                            renderItem={({item}) => (
-                                <View style={styles.items}> 
-                                    <Text>{item.username}</Text>
-                                    
-                                    <View style={styles.buttonContainer}>
-                                        <TouchableOpacity style={item.available ? styles.friendRequestButton : styles.inactiveButton}
-                                            onPress={(self) => handleFriendRequest(self,item)}
-                                            disabled={item.available ? false : true}
-                                        />
-                                    </View>
-                                </View>                                
-                            )}/>
-            }
+            <View style={{height:"100%"}}>
+                { 
+                    loading ? <LoadScreen/> :
+                        foundPeople.length == 0 ? 
+                            <Text>NO DATA FOUND</Text>
+                        :
+                            <FlatList style={styles.foundPeopleContainer}
+                                data={foundPeople}
+                                renderItem={({item}) => (
+                                    <View style={styles.items}> 
+                                        <Text>{item.username}</Text>
+                                        
+                                        <View style={styles.buttonContainer}>
+                                            <TouchableOpacity style={item.available ? styles.friendRequestButton : styles.inactiveButton}
+                                                onPress={(self) => handleFriendRequest(self,item)}
+                                                disabled={item.available ? false : true}
+                                            />
+                                        </View>
+                                    </View>                                
+                                )}/>
+                }
+            </View>
             
             
         </View>
@@ -107,11 +109,9 @@ const SearchPeopleView = (props) => {
 
 
 const styles = StyleSheet.create({
-    root: {
-        paddingTop: 10,
-    },
+
     searchBarRoot: {
-        height: "5%",
+        height: "7%",
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "center",
@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
         justifyContent: "center",
     },
     foundPeopleContainer: {
-        height: "50%",
+        // height: "10%",
         margin: 10,
     },
     items: {
