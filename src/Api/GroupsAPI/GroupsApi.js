@@ -5,8 +5,10 @@ import * as SecureStore from 'expo-secure-store';
 import { asyncGetItem, asyncSetItem } from "../../../Utility/Cache/Cache";
 
 
-export const getGroupsCall = async (props) => {    
-
+export const getGroupsCall = async (overrideCache) => {    
+    if (overrideCache) {
+        return callGroupsApi();
+    }
     var groups = await asyncGetItem("groups")
     .catch((error) => {
         return error;

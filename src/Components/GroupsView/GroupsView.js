@@ -1,5 +1,5 @@
 import { useEffect, useState, useMemo } from "react"
-import { View, FlatList, StyleSheet, TouchableOpacity, Text } from "react-native"
+import { View, FlatList, StyleSheet, TouchableOpacity, Text, RefreshControl } from "react-native"
 
 import { getGroupsCall } from "../../Api/GroupsAPI/GroupsApi"
 import Colors from "../../Constants/Colors"
@@ -9,6 +9,7 @@ import LoadScreen from "../Loading/LoadScreen"
 
 const GroupsView = ({ style, selectGroup}) => {
 
+    const [refreshing, setRefreshing] = useState(false);
     const [groups, setGroups] = useState([]);
 
     const [selectedGroup, setSelectedGroup] = useState("");
@@ -28,18 +29,21 @@ const GroupsView = ({ style, selectGroup}) => {
         setSelectedGroup(group);
     }
 
-    useEffect(() => {
-        let isCancelled = false;
+    const getGroups = async (overrideCache) => {
         showLoading();
         setSelectedGroup("");
-        getGroupsCall()
-        .then((groups) => {
-            setGroups(groups);
-            hideLoading();
-        })
-        .catch((error) => {
-            console.error(error)
-        });
+        const groups = await getGroupsCall(overrideCache)
+        setGroups(groups);
+        hideLoading();
+    }
+
+    const onRefresh = () => {
+        getGroups(true)
+    }
+
+    useEffect(() => {
+        let isCancelled = false;
+        getGroups(false)
             
         return () => {
             isCancelled = true;
@@ -61,8 +65,11 @@ const GroupsView = ({ style, selectGroup}) => {
                     </TouchableOpacity>
                 </View>
             )}
-            numColumns={1}>
-        </FlatList>
+            numColumns={1}
+            refreshControl={ 
+                <RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>
+            }
+            />
         :
         <View>
             <TouchableOpacity

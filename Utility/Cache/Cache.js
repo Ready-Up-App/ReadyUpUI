@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const ttlDefault = 30;
+const ttlDefault = 180;
 
 export const asyncSetItem = async (key, item, ttl) => {
     if (ttl === undefined) {
@@ -29,10 +29,10 @@ export const asyncGetItem = async (key) => {
 
         const val = JSON.parse(result);
         const currTime = Math.floor(Date.now() / 1000);
-        if (val.ttl <= currTime) {
-            AsyncStorage.removeItem(key);
-            return null;
-        }
+        // if (val.ttl <= currTime) {
+        //     AsyncStorage.removeItem(key);
+        //     return null;
+        // }
         return val.item
     })
 }
