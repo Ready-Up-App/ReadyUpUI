@@ -9,7 +9,6 @@ import FriendItem from "../FriendItem";
 const FriendsView = (props) => {
 
     const [refreshing, setRefreshing] = useState(false);
-    const {doRefresh} = false;
     const [friends, setFriends] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
 

@@ -1,34 +1,58 @@
 import React, { useEffect, useState } from "react";
 
-import { View, SafeAreaView, StyleSheet, Text, TouchableOpacity } from "react-native";
+import { View, SafeAreaView, StyleSheet, Text, TouchableOpacity, KeyboardAvoidingView } from "react-native";
 
 import Colors from "../../Constants/Colors";
 
 import GroupsView from "../../Components/GroupsView/GroupsView";
 import BottomView from "../../Components/BottomView";
 import { ConstStyles } from "../../Constants/Styles";
+import CreateGroupView from "../../Components/CreateGroupView/CreateGroupView";
 
 const GroupsScreen = ({navigation}) => {
             
     const [selectedGroup, setSelectedGroup] = useState();
+    const [goGroupCreate, setGoGroupCreate] = useState(false);
 
     const updateSelectedGroup = (group) => {
         setSelectedGroup(group);
     }
 
+    const navCreateGroup = (val) => {
+        setGoGroupCreate(val)
+    }
     return (
-        <SafeAreaView style={styles.root}>
+        <KeyboardAvoidingView style={styles.root}
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
+            enabled={false}>
+                
             <View style={ConstStyles.banner}>
-                <TouchableOpacity onPress={() => navigation.navigate("FriendsList")} style={styles.friendsButton}>
-                    <Text>Friends</Text>
-                </TouchableOpacity>
-                <Text style={styles.bannerTitle}>Groups</Text>
+
+                {goGroupCreate ? 
+                    <><TouchableOpacity onPress={() => navCreateGroup(false)} style={styles.friendsButton}>
+                        <Text>Back</Text>
+                    </TouchableOpacity>
+                    <Text style={styles.bannerTitle}>Groups</Text></>
+                :
+                    <><TouchableOpacity onPress={() => navigation.navigate("FriendsList")} style={styles.friendsButton}>
+                        <Text>Friends</Text>
+                    </TouchableOpacity>
+                    <Text style={styles.bannerTitle}>Groups</Text>
+                    <TouchableOpacity onPress={() => navCreateGroup(true)} style={styles.friendsButton}>
+                        <Text>Create</Text>
+                    </TouchableOpacity></>
+                }
+                
             </View>
             <View style={ConstStyles.topView}>
-                <GroupsView style={styles.groupsView} selectGroup={updateSelectedGroup}/>
+                {goGroupCreate ? 
+                    <CreateGroupView callable={navCreateGroup}/>
+                : 
+                    <GroupsView style={styles.groupsView} selectGroup={updateSelectedGroup}/>
+                }
             </View>
             <BottomView navigation={navigation}/>
-        </SafeAreaView>
+        </KeyboardAvoidingView>
     )
 }
 

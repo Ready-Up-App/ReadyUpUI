@@ -1,1 +1,1 @@
-export {GroupsView} from "./GroupsView"
+export { default } from "./GroupsView"

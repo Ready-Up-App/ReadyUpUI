@@ -41,3 +41,23 @@ const callGroupsApi = async () => {
     });
     return result;
 }
+
+
+
+export const createGroupCall = async (props) => {
+    var token = await SecureStore.getItemAsync("token");
+    const result = await fetch(url.createGroup, 
+        {
+            method: "POST",
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + token.toString()
+            },
+            body: JSON.stringify({
+                group: { name: props.title, description: props.description }
+            })
+        });
+
+    return result;
+}
