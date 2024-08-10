@@ -46,7 +46,7 @@ const GroupsScreen = ({navigation}) => {
             </View>
             <View style={ConstStyles.topView}>
                 {goGroupCreate ? 
-                    <CreateGroupView/>
+                    <CreateGroupView callable={navCreateGroup}/>
                 : 
                     <GroupsView style={styles.groupsView} selectGroup={updateSelectedGroup}/>
                 }
