@@ -18,7 +18,6 @@ const FriendItem = ({friendProp}) => {
             ...prev,
             accepted : isAccepted,
         }))
-        console.warn(friend);
         await respondFriendRequest(username, isAccepted)
     }
 

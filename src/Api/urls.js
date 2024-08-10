@@ -13,6 +13,7 @@ const url = {
     signUp : endpoints.auth + "/signUp",
 
     getJoinable: endpoints.groups + "/getJoinable",
+    createGroup: endpoints.groups + "/create",
 
     getFriends: endpoints.person + "/getFriends",
     searchPerson: endpoints.person + "/searchUsername",
