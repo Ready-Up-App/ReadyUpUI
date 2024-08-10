@@ -17,6 +17,7 @@ export const signInCall = async (props) => {
             })
         }
     );
+    console.warn(result)
     return result;
 }
 
