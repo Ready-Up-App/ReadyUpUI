@@ -17,14 +17,13 @@ export const signInCall = async (props) => {
             })
         }
     );
-    console.warn(result)
     return result;
 }
 
 export const signUpCall = async (props) => {
 
     
-    const result = await fetch(url.root + url.signUp,
+    const result = await fetch(url.signUp,
         {
             method: "POST",
             headers: {

@@ -9,6 +9,7 @@ const endpoints = {
     person: root + "/person",
     auth: root + "/auth",
     groups: root + "/groups",
+    notification: root + "/pushNotification"
 }
 
 const url = {
@@ -23,6 +24,9 @@ const url = {
     searchPerson: endpoints.person + "/searchUsername",
     sendFriendRequest: endpoints.person + "/friendRequest",
     respondFriendRequest: endpoints.person + "/respondFriendRequest",
+
+    getPushToken: endpoints.notification + "/getToken",
+    setPushToken: endpoints.notification + "/setToken",
 }
 
 export default url;
