@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { getFriends, respondFriendRequest } from "../../Api/PeopleAPI/PeopleApi";
-import { View, FlatList, StyleSheet, TouchableOpacity, Text, Image, RefreshControl } from "react-native";
+import { View, FlatList, StyleSheet, TouchableOpacity, Text, Image, RefreshControl, SafeAreaView } from "react-native";
 
 import LoadScreen from "../Loading/LoadScreen";
 import FriendItem from "../FriendItem";
+import Colors from "../../Constants/Colors";
 
 
 const FriendsView = (props) => {
@@ -42,22 +43,30 @@ const FriendsView = (props) => {
     },[refreshing]);
 
     return (
-        isLoading ? <LoadScreen/> :
-        <FlatList 
-            style={styles.itemContainer}
-            data={friends}
-            renderItem={({item}) => (
-                    <FriendItem friendProp={item}/>
-            )}
-            numColumns={1}
-            refreshControl={ 
-                <RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>
+        <SafeAreaView style={styles.root}>
+            {
+                isLoading ? <LoadScreen/> :
+                    <FlatList 
+                        style={styles.itemContainer}
+                        data={friends}
+                        renderItem={({item}) => (
+                                <FriendItem friendProp={item}/>
+                        )}
+                        numColumns={1}
+                        refreshControl={ 
+                            <RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>
+                        }
+                    />
             }
-            />
+        </SafeAreaView>
     );
 }
 
 const styles = StyleSheet.create({
+    root: {
+        height: "100%",
+        backgroundColor: Colors.blueGray,
+    },
     itemContainer: {
         height: "100%",
         marginVertical: 10,

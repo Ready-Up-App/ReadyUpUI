@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 import { View, SafeAreaView, StyleSheet, Text, TouchableOpacity, KeyboardAvoidingView, Platform } from "react-native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 import Colors from "../../Constants/Colors";
 
@@ -8,6 +9,10 @@ import GroupsView from "../../Components/GroupsView/GroupsView";
 import BottomView from "../../Components/BottomView";
 import { ConstStyles } from "../../Constants/Styles";
 import CreateGroupView from "../../Components/CreateGroupView/CreateGroupView";
+
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+
+const GroupNav = createMaterialTopTabNavigator()
 
 const GroupsScreen = ({navigation}) => {
             
@@ -21,12 +26,13 @@ const GroupsScreen = ({navigation}) => {
     const navCreateGroup = (val) => {
         setGoGroupCreate(val)
     }
+
     return (
         <SafeAreaView style={styles.root}
             behavior={Platform.OS === "ios" ? "padding" : "height"}
             enabled={false}>
                 
-            <View style={ConstStyles.banner}>
+            {/* <View style={styles.banner}>
 
                 {goGroupCreate ? 
                     <><TouchableOpacity onPress={() => navCreateGroup(false)} style={styles.friendsButton}>
@@ -43,15 +49,13 @@ const GroupsScreen = ({navigation}) => {
                     </TouchableOpacity></>
                 }
                 
+            </View> */}
+            <View style={styles.topView}>
+                <GroupNav.Navigator screenOptions={{headerShown: false}} >
+                    <GroupNav.Screen name="JoinableGroups" component={GroupsView} />
+                    <GroupNav.Screen name="CreateGroup" component={CreateGroupView} />
+                </GroupNav.Navigator>
             </View>
-            <View style={ConstStyles.topView}>
-                {goGroupCreate ? 
-                    <CreateGroupView callable={navCreateGroup}/>
-                : 
-                    <GroupsView style={styles.groupsView} selectGroup={updateSelectedGroup}/>
-                }
-            </View>
-            <BottomView navigation={navigation}/>
         </SafeAreaView>
     )
 }
@@ -60,16 +64,16 @@ const styles = StyleSheet.create({
 root: {
     paddingTop: "10%",
     backgroundColor: Colors.black,
-    flex: 1,
+    height: "100%",
     flexDirection: "column",
 }, 
     topView: {
-        flex: 10,
+        height: "100%",
         backgroundColor: Colors.blueGray,
         flexDirection: "row",
     },
     banner: {
-        flex: 1,
+        height: "10%",
         backgroundColor: Colors.black,
         justifyContent: "flex-start",
         alignItems: "center",
@@ -85,17 +89,6 @@ root: {
             backgroundColor: Colors.blue,
             margin: "4%",
         },
-    groupsView: {
-        flex: 8,
-        backgroundColor: Colors.blueGray
-    },
-    bottomView: {
-        flex: 1,
-        borderColor: Colors.black,
-        borderWidth: 1,
-        backgroundColor: Colors.black
-    },
-    
 });
 
 export default GroupsScreen;

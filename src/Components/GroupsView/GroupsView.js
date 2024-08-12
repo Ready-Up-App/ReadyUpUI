@@ -1,5 +1,5 @@
 import { useEffect, useState, useMemo } from "react"
-import { View, FlatList, StyleSheet, TouchableOpacity, Text, RefreshControl } from "react-native"
+import { View, FlatList, StyleSheet, TouchableOpacity, Text, RefreshControl, SafeAreaView, Platform } from "react-native"
 
 import { getGroupsCall } from "../../Api/GroupsAPI/GroupsApi"
 import Colors from "../../Constants/Colors"
@@ -51,43 +51,48 @@ const GroupsView = ({ style, selectGroup}) => {
     }, [])
 
 
-    return (isLoading ? <LoadScreen/> :
-        
-        selectedGroup === "" ? 
-        <FlatList 
-            style={styles.itemContainer}
-            data={groups}
-            renderItem={({item}) => (
-                <View style={{flex: 1}}> 
-                    <TouchableOpacity style={styles.items} 
-                    onPress={() => select(item.name)}>
-                        <Text>{item.name}</Text>
-                    </TouchableOpacity>
-                </View>
-            )}
-            numColumns={1}
-            refreshControl={ 
-                <RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>
-            }
-            />
-        :
-        <View>
-            <TouchableOpacity
-                style={styles.items} 
-                onPress={() => select("")}>
-                <Text>BACK</Text>
-            </TouchableOpacity>
-            <Text>{selectedGroup}</Text>
-        </View>
-        
+    return (
+        <SafeAreaView style={styles.root} behavior={Platform.OS === "ios" ? "padding" : "height"}
+            enabled={false}>
+            {isLoading ? <LoadScreen/> :
             
+                selectedGroup === "" ? 
+                <FlatList 
+                    style={styles.itemContainer}
+                    data={groups}
+                    renderItem={({item}) => (
+                        <View style={{flex: 1}}> 
+                            <TouchableOpacity style={styles.items} 
+                            onPress={() => select(item.name)}>
+                                <Text>{item.name}</Text>
+                            </TouchableOpacity>
+                        </View>
+                    )}
+                    numColumns={1}
+                    refreshControl={ 
+                        <RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>
+                    }
+                    />
+                :
+                <View>
+                    <TouchableOpacity
+                        style={styles.items} 
+                        onPress={() => select("")}>
+                        <Text>BACK</Text>
+                    </TouchableOpacity>
+                    <Text>{selectedGroup}</Text>
+                </View>
+            }
+        
+        </SafeAreaView>
     );
         
 }
 
 const styles = StyleSheet.create({
     root: {
-        flexDirection: "row"
+        height: "100%",
+        backgroundColor: Colors.blueGray,
     },
     itemContainer: {
         padding: 10,

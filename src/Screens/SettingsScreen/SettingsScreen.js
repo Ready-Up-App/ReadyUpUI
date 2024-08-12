@@ -50,7 +50,8 @@ const SettingsScreen = ({navigation}) => {
 
 const styles = StyleSheet.create({
     root: {
-        height: "100%"
+        height: "100%",
+        backgroundColor: Colors.black,
     }, 
         topView: {
             height: "100%",
