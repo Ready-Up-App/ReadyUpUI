@@ -1,11 +1,9 @@
 import { useEffect, useState } from "react";
 import CustomInput from "../CustomInput/CustomInput";
-import { View, StyleSheet, Text, TouchableOpacity, KeyboardAvoidingView, Keyboard } from "react-native";
-import { FlatList } from "react-native-gesture-handler";
+import { FlatList, View, StyleSheet, Text, TouchableOpacity, KeyboardAvoidingView, Keyboard, SafeAreaView, TextInput } from "react-native";
 import Colors from "../../Constants/Colors";
 import { searchPeople, sendFriendRequest } from "../../Api/PeopleAPI/PeopleApi";
 import LoadScreen from "../Loading/LoadScreen";
-import { ConstStyles } from "../../Constants/Styles";
 
 const SearchPeopleView = (props) => {
 
@@ -16,8 +14,9 @@ const SearchPeopleView = (props) => {
 
     const [formSubmitted, setFormSubmitted] = useState(false);
 
-    const handleChange = (name, val) => {
+    const handleChange = (val) => {
         setUsername(val);
+        // console.log(val);
     }
 
     const submit = () => {
@@ -63,70 +62,89 @@ const SearchPeopleView = (props) => {
     },[formSubmitted])
 
     return (
-
-        <View style={ConstStyles.root}>
-            <View style={styles.searchBarRoot}>
-        
-                <CustomInput 
-                    value={username}
-                    setValue={handleChange}
-                    placeholder={"Search Username"}
-                    style={styles.searchField}
-                />
-                
-                <TouchableOpacity text={"Search"} 
-                    onPress={submit}
-                    style={styles.searchButton}>
-                    <Text>Search</Text>
-                </TouchableOpacity>
-                
+        <SafeAreaView style={styles.root}>
+            <View style={styles.container}>
+                <View style={styles.searchBarRoot}>
             
-            </View>
+                    <TextInput 
+                        value={username}
+                        onChangeText={(text) => handleChange(text)}
+                        placeholder={"Search Username"}
+                        placeholderTextColor={Colors.black}
+                        textAlign="center"
+                        style={styles.searchField}
+                        autoCapitalize='none'
+                    />
+                    
+                    <TouchableOpacity text={"Search"} 
+                        onPress={submit}
+                        style={styles.searchButton}>
+                        <Text>Search</Text>
+                    </TouchableOpacity>
+                    
+                
+                </View>
 
-            <View style={{height:"100%"}}>
-                { 
-                    loading ? <LoadScreen/> :
-                        foundPeople.length == 0 ? 
-                            <Text>NO DATA FOUND</Text>
-                        :
-                            <FlatList style={styles.foundPeopleContainer}
-                                data={foundPeople}
-                                renderItem={({item, index}) => (
-                                    <View style={styles.items}> 
-                                        <Text>{item.username}</Text>
-                                        
-                                        <View style={styles.buttonContainer}>
-                                            <TouchableOpacity style={item.available ? styles.friendRequestButton : styles.inactiveButton}
-                                                onPress={() => handleFriendRequest(item, index)}
-                                                disabled={item.available ? false : true}
-                                            />
+                <View style={{height:"100%"}}>
+                    { 
+                        loading ? <LoadScreen/> :
+                            foundPeople.length == 0 ? 
+                                <Text>NO DATA FOUND</Text>
+                            :
+                                <FlatList style={styles.foundPeopleContainer}
+                                    data={foundPeople}
+                                    renderItem={({item, index}) => (
+                                        <View style={styles.items}> 
+                                            <Text>{item.username}</Text>
+                                            
+                                            <View style={styles.buttonContainer}>
+                                                <TouchableOpacity style={item.available ? styles.friendRequestButton : styles.inactiveButton}
+                                                    onPress={() => handleFriendRequest(item, index)}
+                                                    disabled={item.available ? false : true}
+                                                />
+                                            </View>
                                         </View>
-                                    </View>
-                                )}
-                                ItemSeparatorComponent={() => <View style={{borderWidth:1}}/>}/>
-                }
+                                    )}
+                                    ItemSeparatorComponent={() => <View style={{borderWidth:1}}/>}
+                                    showsHorizontalScrollIndicator={false}
+                                    showsVerticalScrollIndicator={false}
+                                />
+                    }
+                </View>
             </View>
-            
-            
-        </View>
+        </SafeAreaView>
                     
     );
 }
 
 
 const styles = StyleSheet.create({
-
+    root: {
+        height: "100%",
+        backgroundColor: Colors.blueGray,
+    },
+    container: {
+        height: "100%",
+        width: "100%",
+        padding: 10
+    },
     searchBarRoot: {
         height: "7%",
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "center",
-        
     },
     searchField: {
         width: "73%",
         height: "100%",
         marginLeft: "2%",
+        backgroundColor: "white",
+
+        borderColor: Colors.gray,
+        borderWidth: 1,
+        borderRadius: 50,
+
+        justifyContent: "center",
     },
     searchButton: {
         width: "21%",
@@ -137,7 +155,6 @@ const styles = StyleSheet.create({
         justifyContent: "center",
     },
     foundPeopleContainer: {
-        // height: "10%",
         margin: 10,
     },
     items: {

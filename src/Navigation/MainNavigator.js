@@ -1,6 +1,7 @@
 import React from "react";
 
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 
 import SignInScreen from "../Screens/SignInScreen/SignInScreen";
 import SignUpScreen from "../Screens/SignUpScreen/SignUpScreen";
@@ -17,6 +18,7 @@ import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
 import { setPushToken } from "../Api/NotificationAPI/NotificationApi";
+import Colors from "../Constants/Colors";
 
     
 Notifications.setNotificationHandler({
@@ -27,7 +29,7 @@ Notifications.setNotificationHandler({
     }),
 });
 
-const Stack = createNativeStackNavigator();
+const Main = createMaterialBottomTabNavigator();
 const AuthStack = createNativeStackNavigator();
 
 
@@ -109,11 +111,11 @@ const AppNavigation = () => {
 
 
     return (
-        <Stack.Navigator screenOptions={{ headerShown: false, animation: "none" }}>
-            <Stack.Screen name="Groups" component={GroupsScreen} />
-            <Stack.Screen name="FriendsList" component={FriendsScreen} />
-            <Stack.Screen name="Settings" component={SettingsScreen} />
-        </Stack.Navigator>
+        <Main.Navigator screenOptions={{ headerShown: false, animation: "none" }} initialRouteName={"Groups"} backBehavior="history" barStyle={{backgroundColor: Colors.black}}>
+            <Main.Screen name="FriendsList" component={FriendsScreen} />
+            <Main.Screen name="Groups" component={GroupsScreen} />
+            <Main.Screen name="Settings" component={SettingsScreen} />
+        </Main.Navigator>
     )
 }
 

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 import { View, SafeAreaView, StyleSheet, Text, TouchableOpacity, KeyboardAvoidingView, Platform } from "react-native";
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 
 import Colors from "../../Constants/Colors";
 
@@ -8,6 +9,9 @@ import FriendsView from "../../Components/FriendsView/FriendsView";
 import SearchPeopleView from "../../Components/SearchPeopleView";
 import BottomView from "../../Components/BottomView";
 import { ConstStyles } from "../../Constants/Styles";
+
+const FriendsNav = createMaterialTopTabNavigator()
+
 
 const FriendScreen = ({navigation}) => {
      
@@ -28,7 +32,7 @@ const FriendScreen = ({navigation}) => {
             behavior={Platform.OS === "ios" ? "padding" : "height"}
             enabled={false}>
 
-            <View style={ConstStyles.banner}>
+            {/* <View style={ConstStyles.banner}>
                 <TouchableOpacity style={styles.bannerGroupsButton} onPress={goToGroups}>
                     <Text style={{}}>Groups</Text>
 
@@ -38,32 +42,26 @@ const FriendScreen = ({navigation}) => {
                     <Text style={{}}>Search</Text>
 
                 </TouchableOpacity>
-            </View>
-            <View style={ConstStyles.topView}>
-                {toggleSearch ? 
-                    <SearchPeopleView />
-                :
-                    <FriendsView />
-                }
+            </View> */}
+            <View style={styles.topView}>
                 
+                <FriendsNav.Navigator>
+                    <FriendsNav.Screen name="FriendsView" component={FriendsView} />
+                    <FriendsNav.Screen name="SearchPeople" component={SearchPeopleView} />
+                </FriendsNav.Navigator>
             </View>
-            <BottomView navigation={navigation}/>
         </SafeAreaView>
     )
-        
-        
-        
-
 }
 
 const styles = StyleSheet.create({
 root: {
     backgroundColor: Colors.black,
-    flex: 1,
+    height: "100%",
     flexDirection: "column",
 }, 
     topView: {
-        flex: 10,
+        height: "100%",
         backgroundColor: Colors.blueGray,
         flexDirection: "row",
     },
