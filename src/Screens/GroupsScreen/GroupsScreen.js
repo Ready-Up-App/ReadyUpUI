@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import { View, SafeAreaView, StyleSheet, Text, TouchableOpacity, KeyboardAvoidingView } from "react-native";
+import { View, SafeAreaView, StyleSheet, Text, TouchableOpacity, KeyboardAvoidingView, Platform } from "react-native";
 
 import Colors from "../../Constants/Colors";
 
@@ -22,7 +22,7 @@ const GroupsScreen = ({navigation}) => {
         setGoGroupCreate(val)
     }
     return (
-        <KeyboardAvoidingView style={styles.root}
+        <SafeAreaView style={styles.root}
             behavior={Platform.OS === "ios" ? "padding" : "height"}
             enabled={false}>
                 
@@ -52,12 +52,13 @@ const GroupsScreen = ({navigation}) => {
                 }
             </View>
             <BottomView navigation={navigation}/>
-        </KeyboardAvoidingView>
+        </SafeAreaView>
     )
 }
 
 const styles = StyleSheet.create({
 root: {
+    paddingTop: "10%",
     backgroundColor: Colors.black,
     flex: 1,
     flexDirection: "column",

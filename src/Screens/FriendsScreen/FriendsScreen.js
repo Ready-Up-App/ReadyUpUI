@@ -24,7 +24,7 @@ const FriendScreen = ({navigation}) => {
     }
 
     return (
-        <KeyboardAvoidingView style={styles.root}
+        <SafeAreaView style={styles.root}
             behavior={Platform.OS === "ios" ? "padding" : "height"}
             enabled={false}>
 
@@ -48,7 +48,7 @@ const FriendScreen = ({navigation}) => {
                 
             </View>
             <BottomView navigation={navigation}/>
-        </KeyboardAvoidingView>
+        </SafeAreaView>
     )
         
         

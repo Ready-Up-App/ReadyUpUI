@@ -1,10 +1,15 @@
+import Constants from "expo-constants"
 
-const root = "http://10.0.2.2:8080/api";
+// const root = "http://localhost:8080/api";
 
+const root =
+  'http://'.concat(Constants.expoConfig?.hostUri?.split(':').shift()?.concat(':8080/api') ??
+  'localhost:8080/api');
 const endpoints = {
     person: root + "/person",
     auth: root + "/auth",
     groups: root + "/groups",
+    notification: root + "/pushNotification"
 }
 
 const url = {
@@ -19,6 +24,9 @@ const url = {
     searchPerson: endpoints.person + "/searchUsername",
     sendFriendRequest: endpoints.person + "/friendRequest",
     respondFriendRequest: endpoints.person + "/respondFriendRequest",
+
+    getPushToken: endpoints.notification + "/getToken",
+    setPushToken: endpoints.notification + "/setToken",
 }
 
 export default url;
