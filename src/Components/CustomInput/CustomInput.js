@@ -1,12 +1,14 @@
 import React from "react";
-import { View, TextInput, StyleSheet, } from "react-native";
+import { View, TextInput, StyleSheet, Text, } from "react-native";
 
 import Colors from "../../Constants/Colors";
 
-const CustomInput = ({ value, setValue, placeholder, secureTextEntry, placeholderTextColor, style }) => {
-
+const CustomInput = ({ value, setValue, placeholder, secureTextEntry, placeholderTextColor, style, errors}) => {
     return (
-        <View style={[styles.container, style]}>
+        <>
+        {errors && <Text style={{color: Colors.red, textAlign: "center"}}>{errors}</Text>}
+
+        <View style={errors === undefined ? [styles.container, style] : [styles.container, style, styles.errorStyle]}>
             <TextInput
                 value={value}
                 placeholder={placeholder}
@@ -17,6 +19,7 @@ const CustomInput = ({ value, setValue, placeholder, secureTextEntry, placeholde
                 autoCapitalize='none'
             />
         </View>
+        </>
     )
 }
 
@@ -35,6 +38,11 @@ const styles = StyleSheet.create({
     },
     input: {
         textAlign: "center",
+    },
+    errorStyle: {
+        // textAlign: "center",
+        borderColor: Colors.red,
+        borderWidth: 2
     },
 });
 

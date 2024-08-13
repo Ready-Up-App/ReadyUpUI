@@ -12,6 +12,8 @@ const GroupsView = ({ style, selectGroup}) => {
     const [refreshing, setRefreshing] = useState(false);
     const [groups, setGroups] = useState([]);
 
+    const [errors, setErrors] = useState({});
+
     const [selectedGroup, setSelectedGroup] = useState("");
 
     const [isLoading, setIsLoading] = useState(true);
@@ -32,8 +34,16 @@ const GroupsView = ({ style, selectGroup}) => {
     const getGroups = async (overrideCache) => {
         showLoading();
         setSelectedGroup("");
-        const groups = await getGroupsCall(overrideCache)
-        setGroups(groups);
+        await getGroupsCall(overrideCache)
+        .then((groups) => {
+            setGroups(groups);
+            setErrors({});
+        }).catch((error) => {
+            setErrors(prev => ({
+                ...prev,
+                network: error.message,
+            }));
+        })
         hideLoading();
     }
 
@@ -52,12 +62,17 @@ const GroupsView = ({ style, selectGroup}) => {
 
 
     return (
-        <SafeAreaView style={styles.root} behavior={Platform.OS === "ios" ? "padding" : "height"}
+        <SafeAreaView style={styles.root} 
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
             enabled={false}>
-            {isLoading ? <LoadScreen/> :
             
+            {isLoading ? <LoadScreen/> :
+
                 selectedGroup === "" ? 
                 <FlatList 
+                    ListHeaderComponent={ 
+                        errors["network"] && <Text style={styles.refreshErrorText}>{errors["network"]}</Text>
+                    }
                     style={styles.itemContainer}
                     data={groups}
                     renderItem={({item}) => (
@@ -109,7 +124,11 @@ const styles = StyleSheet.create({
     },
     button: {
         flex: 1
-    }
+    },
+    refreshErrorText: {
+        textAlign: "center",
+        color: Colors.gray,
+    },
 });
 
 export default GroupsView;

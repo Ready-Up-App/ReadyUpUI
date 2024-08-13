@@ -1,10 +1,11 @@
 import url from "../urls";
 import * as SecureStore from 'expo-secure-store';
+import { callWithTimeout } from "../Util/Timeout";
 
 
 export const signInCall = async (props) => {
 
-    const result = await fetch(url.signIn,
+    const result = await callWithTimeout(fetch(url.signIn,
         {
             method: "POST",
             headers: {
@@ -16,14 +17,14 @@ export const signInCall = async (props) => {
                 password: props.form.password,
             })
         }
-    );
+    ));
     return result;
 }
 
 export const signUpCall = async (props) => {
 
     
-    const result = await fetch(url.signUp,
+    const result = await callWithTimeout(fetch(url.signUp,
         {
             method: "POST",
             headers: {
@@ -37,7 +38,7 @@ export const signUpCall = async (props) => {
                 password: props.form.password
             })
         }
-    )
+    ));
     return result;
 }
 

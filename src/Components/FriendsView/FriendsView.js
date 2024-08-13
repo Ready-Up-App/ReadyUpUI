@@ -13,6 +13,9 @@ const FriendsView = (props) => {
     const [friends, setFriends] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
 
+    const [errors, setErrors] = useState({});
+
+
     const showLoading = () => {
         setIsLoading(true);
     }
@@ -22,8 +25,20 @@ const FriendsView = (props) => {
     }
 
     const getFriendsCall = async (overrideCache) => {
-        const result = await getFriends(overrideCache);
-        setFriends(result.friends)
+        showLoading();
+
+        await getFriends(overrideCache)
+        .then((result) => {
+            if (result && result.ok) {
+                setFriends(result.friends)    
+                setErrors({})
+            }
+        }).catch((error) => {
+            setErrors(prev => ({
+                ...prev,
+                network: error.message,
+            }))
+        });
         hideLoading();
     }
 
@@ -34,7 +49,6 @@ const FriendsView = (props) => {
 
     useEffect(() => {
         let isCancelled = false;
-        showLoading();
         getFriendsCall(refreshing);
             
         return () => {
@@ -47,6 +61,9 @@ const FriendsView = (props) => {
             {
                 isLoading ? <LoadScreen/> :
                     <FlatList 
+                        ListHeaderComponent={ 
+                            errors["network"] && <Text style={styles.refreshErrorText}>{errors["network"]}</Text>
+                        }
                         style={styles.itemContainer}
                         data={friends}
                         renderItem={({item}) => (
@@ -71,6 +88,10 @@ const styles = StyleSheet.create({
         height: "100%",
         marginVertical: 10,
         marginHorizontal: 10,
+    },
+    refreshErrorText: {
+        textAlign: "center",
+        color: Colors.gray,
     },
 });
 
