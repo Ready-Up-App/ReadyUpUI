@@ -13,8 +13,8 @@ export const signInCall = async (props) => {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
-                username: props.form.username,
-                password: props.form.password,
+                username: props.username,
+                password: props.password,
             })
         }
     ));
@@ -43,39 +43,17 @@ export const signUpCall = async (props) => {
 }
 
 export const continuousSignIn = async (props) => {
-    let username_email = await SecureStore.getItemAsync("username");
+    let username = await SecureStore.getItemAsync("username");
     let password = await SecureStore.getItemAsync("password");
-    let isEmail = false;
-
-    if (username_email === undefined) {
-        username_email = await SecureStore.getItemAsync("email");
-        isEmail = true;
-    } 
-
-    try {
-        const result = await fetch(url.root + url.signUp,
-            {
-                method: "POST",
-                withCredentials: true,
-                credentials: "include",
-                headers: {
-                    "Accept": "application/json",
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    Username_Email: username_email,
-                    IsEmail: isEmail,
-                    Password: password
-                })
-            }
-        ).then(response => 
-            response.json()
-        )
-        return result;
-    } catch (error) {
-        //USER MUST SIGN IN AGAIN.... SecureStore failure
-        console.log("CRITICAL SECURE STORE FAILURE");
-        return error;
-    }
     
+    const result = await signInCall({username, password})
+
+    await saveToken(result.clone())
+
+    return result;
+}
+
+const saveToken = async (tokenPromise) => {
+    const tokenJson = await tokenPromise.json()
+    SecureStore.setItemAsync("token", tokenJson.accessToken)
 }

@@ -15,8 +15,6 @@ import Logo from "../../../assets/regularIcon.png";
 import SignIn_SignUp_Buttons from "../../Components/SignIn_SignUp_Buttons/SignIn_SignUp_Buttons";
 import LoadScreen from "../../Components/Loading/LoadScreen";
 import { validateSignIn } from "../../../Utility/FormValidator/FormValidator";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { callWithTimeout } from "../../Api/Util/Timeout";
 
 const SignInScreen = ({ navigation }) => {
 
@@ -31,16 +29,20 @@ const SignInScreen = ({ navigation }) => {
     const [isFocused] = useState({signIn: navigation.isFocused(), signUp: !navigation.isFocused()});
 
     const { height } = useWindowDimensions();
-    
+
+    const options = { keychainAccessible: SecureStore.WHEN_UNLOCKED_THIS_DEVICE_ONLY }
+
     async function saveOnValidSignIn(token) {
         //TODO: find best way to safely store data
         if (await SecureStore.isAvailableAsync()) {
-            await SecureStore.setItemAsync("token", token);
+            await SecureStore.setItemAsync("username", form.username, options);
+            await SecureStore.setItemAsync("password", form.password, options);
+            await SecureStore.setItemAsync("token", token, options);
         }
     }
 
     const signIn = async () => {
-        await signInCall({form})
+        await signInCall(form)
             .then(result => {
                 if (result.status == 401) {
                     throw new Error("Invalid username/password");
@@ -50,7 +52,6 @@ const SignInScreen = ({ navigation }) => {
                 saveOnValidSignIn(result.accessToken);
                 setIsLoggedIn(true);
             });
-            
     }
 
     const submitForm = () => {
@@ -147,7 +148,6 @@ const styles = StyleSheet.create({
     mainView: {
         flexDirection: "column",
         alignItems: "center",
-
     },
     inputView: {
         flex:2,

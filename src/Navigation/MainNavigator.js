@@ -17,8 +17,11 @@ import { Platform } from 'react-native';
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
+import * as SecureStore from 'expo-secure-store';
 import { setPushToken } from "../Api/NotificationAPI/NotificationApi";
 import Colors from "../Constants/Colors";
+import LoadScreen from "../Components/Loading/LoadScreen";
+import { continuousSignIn } from "../Api/AuthenticationAPI/AuthApi";
 
     
 Notifications.setNotificationHandler({
@@ -130,17 +133,27 @@ const SignInNavigation = () => {
 
 
 const MainNavigator = () => {
-    const { isLoggedIn } = useLogin();
+    const [isLoading, setIsLoading] = useState(true);
+    const {isLoggedIn} = useLogin();
+    const {setIsLoggedIn} = useLogin();
 
-    if (isLoggedIn) {
-        return (
-            <AppNavigation/>
-        )
-    } else {
-        return (
-            <SignInNavigation/>   
-        )
-    }
+    useEffect(() => {
+        continuousSignIn()
+        .then((result) => {
+            if (result.ok) {
+                SecureStore.setItemAsync("token", result.json().accessToken);
+                setIsLoggedIn(true);
+            }
+        }).finally(() => {
+            setIsLoading(false);
+        });
+
+    }, []);
+
+    return (
+        isLoading ? <LoadScreen/> :
+            isLoggedIn ? <AppNavigation/> : <SignInNavigation/>
+    );
 }
 
 export default MainNavigator;

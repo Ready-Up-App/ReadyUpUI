@@ -21,7 +21,6 @@ export const getPushToken = async () => {
 
 
 export const setPushToken = async (pushToken) => {
-    console.log(pushToken)
 
     var token = await SecureStore.getItemAsync("token");
     const result = await fetch(url.setPushToken,

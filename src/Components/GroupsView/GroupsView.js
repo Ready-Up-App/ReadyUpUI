@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from "react"
+import { useEffect, useState } from "react"
 import { View, FlatList, StyleSheet, TouchableOpacity, Text, RefreshControl, SafeAreaView, Platform } from "react-native"
 
 import { getGroupsCall } from "../../Api/GroupsAPI/GroupsApi"
@@ -53,7 +53,7 @@ const GroupsView = ({ style, selectGroup}) => {
 
     useEffect(() => {
         let isCancelled = false;
-        getGroups(false)
+        getGroups(true)
             
         return () => {
             isCancelled = true;

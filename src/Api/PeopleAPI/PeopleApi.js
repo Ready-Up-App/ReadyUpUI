@@ -2,6 +2,7 @@ import url from "../urls";
 import * as SecureStore from 'expo-secure-store';
 import { asyncDeleteItem, asyncGetItem, asyncSetItem } from "../../../Utility/Cache/Cache";
 import { callWithTimeout } from "../Util/Timeout";
+import { continuousSignIn } from "../AuthenticationAPI/AuthApi";
 
 
 export const getFriends = async (overrideCache) => {
@@ -19,7 +20,7 @@ export const getFriends = async (overrideCache) => {
     return friends;    
 }
 
-const callGetFriendsApi = async () => {
+const callGetFriendsApi = async (isRetry) => {
 
     var token = await SecureStore.getItemAsync("token");
 
@@ -36,12 +37,18 @@ const callGetFriendsApi = async () => {
         if(result.ok) {
             asyncSetItem("friends", result.clone())
             return result.json();
+        } else if (!isRetry && result.status == 401) {
+            return continuousSignIn().then((result) => {
+                if (result.ok) {
+                    return callGetFriendsApi(true)
+                }
+            })
         }
     }));
     return result;
 }
 
-export const searchPeople = async (username) => {
+export const searchPeople = async (username, isRetry) => {
     if (username === undefined || username.length == 0) {
         return null;
     }
@@ -60,11 +67,20 @@ export const searchPeople = async (username) => {
                 username: username
             })
         }
-    ));
+    )).then((result) => {
+        if (!isRetry && result.status == 401) {
+            return continuousSignIn().then((result) => {
+                if (result.ok) {
+                    return searchPeople(username, true)
+                }
+            })
+        }
+        return result;
+    });
     return result;
 }
 
-export const sendFriendRequest = async (username) => {
+export const sendFriendRequest = async (username, isRetry) => {
     var token = await SecureStore.getItemAsync("token");
     
     const result = await callWithTimeout(fetch(url.sendFriendRequest,
@@ -79,12 +95,21 @@ export const sendFriendRequest = async (username) => {
                 toUsername: username
             })
         }
-    ));
+    )).then((result) => {
+        if (!isRetry && result.status == 401) {
+            return continuousSignIn().then((result) => {
+                if (result.ok) {
+                    return sendFriendRequest(username, true)
+                }
+            })
+        }
+        return result;
+    });
     return result;
 }
 
 
-export const respondFriendRequest = async (username, isAccepted) => {
+export const respondFriendRequest = async (username, isAccepted, isRetry) => {
 
     var token = await SecureStore.getItemAsync("token");
     
@@ -101,6 +126,15 @@ export const respondFriendRequest = async (username, isAccepted) => {
                 accept: isAccepted
             })
         }
-    );
+    ).then((result) => {
+        if (!isRetry && result.status == 401) {
+            return continuousSignIn().then((result) => {
+                if (result.ok) {
+                    return respondFriendRequest(username, isAccepted, true)
+                }
+            })
+        }
+        return result;
+    });
     return result;
 }
