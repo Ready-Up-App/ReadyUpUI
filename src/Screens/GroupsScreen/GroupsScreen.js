@@ -1,13 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
-import { View, SafeAreaView, StyleSheet, Text, TouchableOpacity, KeyboardAvoidingView, Platform } from "react-native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { View, SafeAreaView, StyleSheet, Platform, StatusBar } from "react-native";
 
 import Colors from "../../Constants/Colors";
 
 import GroupsView from "../../Components/GroupsView/GroupsView";
-import BottomView from "../../Components/BottomView";
-import { ConstStyles } from "../../Constants/Styles";
 import CreateGroupView from "../../Components/CreateGroupView/CreateGroupView";
 
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
@@ -31,41 +28,24 @@ const GroupsScreen = ({navigation}) => {
         <SafeAreaView style={styles.root}
             behavior={Platform.OS === "ios" ? "padding" : "height"}
             enabled={false}>
-                
-            {/* <View style={styles.banner}>
 
-                {goGroupCreate ? 
-                    <><TouchableOpacity onPress={() => navCreateGroup(false)} style={styles.friendsButton}>
-                        <Text>Back</Text>
-                    </TouchableOpacity>
-                    <Text style={styles.bannerTitle}>Groups</Text></>
-                :
-                    <><TouchableOpacity onPress={() => navigation.navigate("FriendsList")} style={styles.friendsButton}>
-                        <Text>Friends</Text>
-                    </TouchableOpacity>
-                    <Text style={styles.bannerTitle}>Groups</Text>
-                    <TouchableOpacity onPress={() => navCreateGroup(true)} style={styles.friendsButton}>
-                        <Text>Create</Text>
-                    </TouchableOpacity></>
-                }
-                
-            </View> */}
             <View style={styles.topView}>
                 <GroupNav.Navigator screenOptions={{headerShown: false}} >
                     <GroupNav.Screen name="JoinableGroups" component={GroupsView} />
                     <GroupNav.Screen name="CreateGroup" component={CreateGroupView} />
                 </GroupNav.Navigator>
             </View>
+
         </SafeAreaView>
     )
 }
 
 const styles = StyleSheet.create({
 root: {
-    paddingTop: "10%",
     backgroundColor: Colors.black,
     height: "100%",
     flexDirection: "column",
+    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0
 }, 
     topView: {
         height: "100%",

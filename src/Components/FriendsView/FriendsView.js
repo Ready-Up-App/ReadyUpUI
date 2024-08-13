@@ -5,6 +5,7 @@ import { FlatList, StyleSheet, Text, RefreshControl, SafeAreaView } from "react-
 import LoadScreen from "../Loading/LoadScreen";
 import FriendItem from "../FriendItem";
 import Colors from "../../Constants/Colors";
+import { Platform } from "react-native";
 
 
 const FriendsView = (props) => {
@@ -57,24 +58,26 @@ const FriendsView = (props) => {
     },[refreshing]);
 
     return (
-        <SafeAreaView style={styles.root}>
-            {
-                isLoading ? <LoadScreen/> :
-                    <FlatList 
-                        ListHeaderComponent={ 
-                            errors["network"] && <Text style={styles.refreshErrorText}>{errors["network"]}</Text>
-                        }
-                        style={styles.itemContainer}
-                        data={friends}
-                        renderItem={({item}) => (
-                                <FriendItem friendProp={item}/>
-                        )}
-                        numColumns={1}
-                        refreshControl={ 
-                            <RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>
-                        }
-                    />
-            }
+        <SafeAreaView style={styles.root} 
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
+            enabled={false}>
+                
+            {isLoading && <LoadScreen/>}
+
+            <FlatList 
+                ListHeaderComponent={ 
+                    errors["network"] && <Text style={styles.refreshErrorText}>{errors["network"]}</Text>
+                }
+                style={styles.itemContainer}
+                data={friends}
+                renderItem={({item}) => (
+                        <FriendItem friendProp={item}/>
+                )}
+                numColumns={1}
+                refreshControl={ 
+                    <RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>
+                }
+            />
         </SafeAreaView>
     );
 }
