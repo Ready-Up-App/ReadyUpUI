@@ -1,14 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
-import { View, SafeAreaView, StyleSheet, Text, TouchableOpacity, KeyboardAvoidingView, Platform } from "react-native";
+import { View, SafeAreaView, StyleSheet, Platform, StatusBar } from "react-native";
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 
 import Colors from "../../Constants/Colors";
 
 import FriendsView from "../../Components/FriendsView/FriendsView";
 import SearchPeopleView from "../../Components/SearchPeopleView";
-import BottomView from "../../Components/BottomView";
-import { ConstStyles } from "../../Constants/Styles";
 
 const FriendsNav = createMaterialTopTabNavigator()
 
@@ -32,17 +30,6 @@ const FriendScreen = ({navigation}) => {
             behavior={Platform.OS === "ios" ? "padding" : "height"}
             enabled={false}>
 
-            {/* <View style={ConstStyles.banner}>
-                <TouchableOpacity style={styles.bannerGroupsButton} onPress={goToGroups}>
-                    <Text style={{}}>Groups</Text>
-
-                </TouchableOpacity>
-                <Text style={styles.bannerTitle}>Friends</Text>
-                <TouchableOpacity style={styles.searchFriendsButton} onPress={toggleSearchChange}>
-                    <Text style={{}}>Search</Text>
-
-                </TouchableOpacity>
-            </View> */}
             <View style={styles.topView}>
                 
                 <FriendsNav.Navigator>
@@ -59,6 +46,7 @@ root: {
     backgroundColor: Colors.black,
     height: "100%",
     flexDirection: "column",
+    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0
 }, 
     topView: {
         height: "100%",
