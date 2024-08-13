@@ -5,6 +5,9 @@ export function validateSignUp(form) {
     if (form.username.trim().length === 0) {
         errors["username"] = "Please enter a Username."
     }
+    if (form.firstname.trim().length === 0) {
+        errors["firstname"] = "Please enter a firstname."
+    }
     if (form.email.trim().length === 0) {
         errors["email"] = "Please enter an email address."
     } else if (!emailRegex.test(form.email)) {
@@ -23,9 +26,8 @@ export function validateSignIn(form) {
     }
 
     if (form.password.trim().length === 0) {
-        errors["password"] = "Please enter an email address."
+        errors["password"] = "Please enter a password."
     }
-    
     return errors;
 }
 

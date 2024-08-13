@@ -1,6 +1,7 @@
 import url from "../urls";
 import * as SecureStore from 'expo-secure-store';
 import { asyncDeleteItem, asyncGetItem, asyncSetItem } from "../../../Utility/Cache/Cache";
+import { callWithTimeout } from "../Util/Timeout";
 
 
 export const getFriends = async (overrideCache) => {
@@ -22,7 +23,7 @@ const callGetFriendsApi = async () => {
 
     var token = await SecureStore.getItemAsync("token");
 
-    const result = await fetch(url.getFriends, 
+    const result = await callWithTimeout(fetch(url.getFriends, 
         {
             method: "GET",
             headers: {
@@ -36,7 +37,7 @@ const callGetFriendsApi = async () => {
             asyncSetItem("friends", result.clone())
             return result.json();
         }
-    });
+    }));
     return result;
 }
 
@@ -47,7 +48,7 @@ export const searchPeople = async (username) => {
 
     var token = await SecureStore.getItemAsync("token");
     
-    const result = await fetch(url.searchPerson,
+    const result = await callWithTimeout(fetch(url.searchPerson,
         {
             method: "POST",
             headers: {
@@ -59,14 +60,14 @@ export const searchPeople = async (username) => {
                 username: username
             })
         }
-    );
+    ));
     return result;
 }
 
 export const sendFriendRequest = async (username) => {
     var token = await SecureStore.getItemAsync("token");
     
-    const result = await fetch(url.sendFriendRequest,
+    const result = await callWithTimeout(fetch(url.sendFriendRequest,
         {
             method: "POST",
             headers: {
@@ -78,7 +79,7 @@ export const sendFriendRequest = async (username) => {
                 toUsername: username
             })
         }
-    );
+    ));
     return result;
 }
 

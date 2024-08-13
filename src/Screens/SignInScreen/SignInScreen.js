@@ -7,7 +7,6 @@ import CustomInput from "../../Components/CustomInput";
 import CustomButton from "../../Components/CustomButton/CustomButton";
 
 import Colors from "../../Constants/Colors";
-import { emailRegex } from "../../Constants/Regex";
 
 import { signInCall } from "../../Api/AuthenticationAPI/AuthApi";
 import { useLogin } from "../../AppContext/LoginProvider";
@@ -17,11 +16,13 @@ import SignIn_SignUp_Buttons from "../../Components/SignIn_SignUp_Buttons/SignIn
 import LoadScreen from "../../Components/Loading/LoadScreen";
 import { validateSignIn } from "../../../Utility/FormValidator/FormValidator";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { callWithTimeout } from "../../Api/Util/Timeout";
 
 const SignInScreen = ({ navigation }) => {
 
     const { setIsLoggedIn } = useLogin();
     const [formSubmitted, setFormSubmitted] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     const [form, setForm] = useState({ username: "", password: "" })
 
@@ -39,21 +40,21 @@ const SignInScreen = ({ navigation }) => {
     }
 
     const signIn = async () => {
-        if (validate()) {
-            await signInCall({form})
+        await signInCall({form})
             .then(result => {
-                if (!result.ok) {
-                    errors["API"] = "Invalid username/password";
+                if (result.status == 401) {
+                    throw new Error("Invalid username/password");
                 }
                 return result.json();
             }).then(result => {
                 saveOnValidSignIn(result.accessToken);
                 setIsLoggedIn(true);
-            } 
-            ).catch(error => {
-                console.log(error)
             });
-        }
+            
+    }
+
+    const submitForm = () => {
+        setFormSubmitted(true)
     }
 
     const handleChange = (name, value) => {
@@ -64,34 +65,36 @@ const SignInScreen = ({ navigation }) => {
     }
 
     const validate = () => {
-        setErrors(validateSignIn(form));
-        if (Object.keys(errors).length > 0) {
+        let errorList = validateSignIn(form);
+        if (Object.keys(errorList).length > 0) {
+            setErrors(errorList);
             return false;
         }
+        setErrors({});
         return true;
     }
 
     useEffect(() => {
-        let isCancelled = false;
-        if (formSubmitted) {
-            AsyncStorage.clear()
-            signIn()
-            .then(() =>{
-                if (!isCancelled){
-                    //print out errors required
-                    setFormSubmitted(false);
-                }
-            })
-            .finally()
-        }
-        return () => {
-            isCancelled = true;
-        }
+
+        if (formSubmitted && validate()) {
+            setIsLoading(true);
         
+            // AsyncStorage.clear()
+            signIn()
+            .catch(error => {
+                setErrors(prev => ({
+                    ...prev,
+                    network: error.message,
+                }));
+            }).finally(() => {
+                setIsLoading(false);
+                setFormSubmitted(false);
+            })
+        }
+        setFormSubmitted(false)
     }, [formSubmitted])
 
-    return (formSubmitted ? <LoadScreen/> :
-
+    return (
         <SafeAreaView style={[styles.root, {height: height}]}>
             
             <KeyboardAvoidingView style={[styles.mainView, {height: height}]} 
@@ -100,32 +103,37 @@ const SignInScreen = ({ navigation }) => {
                 <View style={styles.logoView}>
                     <Image source={Logo} style={[styles.logo, {alignSelf: "center"}]} resizeMode="contain" />
                 </View>
-                
+            
                 <View style={styles.inputView}>
-                    <SignIn_SignUp_Buttons navigation={navigation} focus={isFocused}/>
-                    <CustomInput
-                        value={form.username}
-                        setValue={handleChange}
-                        placeholder="Username"
-                        placeholderTextColor="black"
-                        style={{}}
-                    />
-                    <CustomInput
-                        value={form.password}
-                        setValue={handleChange}
-                        placeholder="Password"
-                        placeholderTextColor="black"
-                        secureTextEntry={true}
-                        style={{}}
-                    />
-                    <CustomButton
-                        text="Sign In"
-                        onPress={() => setFormSubmitted(true)}
-                        style={{ backgroundColor: Colors.green }}
-                    />
-                </View>
+                    
+                    {isLoading ? <LoadScreen/> :
+                      <><SignIn_SignUp_Buttons navigation={navigation} focus={isFocused}/>
+                        
+                        {errors["network"] && <Text style={styles.apiError}>{errors["network"]}</Text>}
+                        <CustomInput
+                            value={form.username}
+                            setValue={handleChange}
+                            placeholder="Username"
+                            placeholderTextColor="black"
+                            errors={errors["username"]}
+                        />
+                        <CustomInput
+                            value={form.password}
+                            setValue={handleChange}
+                            placeholder="Password"
+                            placeholderTextColor="black"
+                            secureTextEntry={true}
+                            errors={errors["password"]}
+                        />
+                        <CustomButton
+                            text="Sign In"
+                            onPress={submitForm}
+                            style={{ backgroundColor: Colors.green }}
+                        />
+                    </>}
 
-                </KeyboardAvoidingView>
+                </View>
+            </KeyboardAvoidingView>
 
         </SafeAreaView>
     );
@@ -157,6 +165,10 @@ const styles = StyleSheet.create({
         height: 125,
         maxHeight: 125,
         maxWidth: 125,
+    },
+    apiError: {
+        textAlign: "center",
+        color: Colors.red,
     },
 });
 

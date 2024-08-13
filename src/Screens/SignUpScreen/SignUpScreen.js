@@ -19,7 +19,7 @@ const SignUpScreen = ({ navigation }) => {
 
     const {setIsLoggedIn} = useLogin();
     const [formSubmitted, setFormSubmitted] = useState(false);
-
+    const [isLoading, setIsLoading] = useState(false);
 
     const [form, setForm] = useState({username:"", password: "", firstname:"", email:""})
 
@@ -48,48 +48,50 @@ const SignUpScreen = ({ navigation }) => {
     }
 
     const signUp = async () => {
-        if (validate()) {
-            await signUpCall({form})
-            .then(result => {
-                if (result.ok) {
-                    saveOnValidSignUp(result.accessToken)
-                    setIsLoggedIn(true);
-                    return result.json()
-                } else if (result.status == 401) {
-                    errors["API"] = "Invalid username/password"
-                    // console.log("Invalid username/password");
-                }
-            }).then(result => 
-                console.log(result)
-            ).catch(error => 
-                console.log(error)
-            );
-        }
+        setIsLoading(true);
+
+        await signUpCall({form})
+        .then(result => {
+            if (result.status != 200) {
+                throw new Error("Username is taken!");
+            }
+            return result.json();
+        }).then(result => {
+            saveOnValidSignUp(result.accessToken)
+            setIsLoggedIn(true);
+        }).catch((error) =>{
+            setErrors(prev => ({
+                ...prev,
+                network: error.message,
+            }));            
+        });
+        
+        setIsLoading(false);
+        setFormSubmitted(false);
     }
 
     const validate = () => {
-        setErrors(validateSignUp(form));
-        if (Object.keys(errors).length > 0) {
+        let errorList = validateSignUp(form);
+        if (Object.keys(errorList).length > 0) {
+            setErrors(errorList);
             return false;
         }
+        setErrors({});
         return true;
     }
 
     useEffect(() => {
-        AsyncStorage.clear();
-        if (formSubmitted) {
+        if (formSubmitted && validate()) {
+            setIsLoading(true);
+            AsyncStorage.clear();
             signUp()
-            .then(() =>{
-                //print out errors required
-                setFormSubmitted(false);
-            })
-            .finally()
         }
+        setFormSubmitted(false)
     }, [formSubmitted]);
 
-    return ( formSubmitted ? <LoadScreen/> :
+    return ( 
         
-            <SafeAreaView style={[styles.root, {height: height}]}>
+        <SafeAreaView style={[styles.root, {height: height}]}>
                 
             <KeyboardAvoidingView style={[styles.mainView, {height: height}]} 
                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
@@ -99,37 +101,43 @@ const SignUpScreen = ({ navigation }) => {
                 </View>
 
                 <View style={styles.inputView}>
-                    <SignIn_SignUp_Buttons navigation={navigation} focus={isFocused}/>
-                    <CustomInput
-                        value={form.firstname}
-                        setValue={handleChange}
-                        placeholder="Firstname"
-                        placeholderTextColor="black"
-                    />
-                    <CustomInput
-                        value={form.email}
-                        setValue={handleChange}
-                        placeholder="Email"
-                        placeholderTextColor="black"
-                    />
-                    <CustomInput
-                        value={form.username}
-                        setValue={handleChange}
-                        placeholder="Username"
-                        placeholderTextColor="black"
-                    />
-                    <CustomInput
-                        value={form.password}
-                        setValue={handleChange}
-                        placeholder="Password"
-                        secureTextEntry={true}
-                        placeholderTextColor="black"
-                    />
-                    <CustomButton
-                        text="Sign Up"
-                        onPress={() => setFormSubmitted(true)}
-                        style={{ backgroundColor: Colors.green }}
-                    />
+                    {isLoading ? <LoadScreen/> :
+                        <><SignIn_SignUp_Buttons navigation={navigation} focus={isFocused}/>
+                        <CustomInput
+                            value={form.firstname}
+                            setValue={handleChange}
+                            placeholder="Firstname"
+                            placeholderTextColor="black"
+                            errors={errors["firstname"]}
+                        />
+                        <CustomInput
+                            value={form.email}
+                            setValue={handleChange}
+                            placeholder="Email"
+                            placeholderTextColor="black"
+                            errors={errors["email"]}
+                        />
+                        <CustomInput
+                            value={form.username}
+                            setValue={handleChange}
+                            placeholder="Username"
+                            placeholderTextColor="black"
+                            errors={errors["username"]}
+                        />
+                        <CustomInput
+                            value={form.password}
+                            setValue={handleChange}
+                            placeholder="Password"
+                            secureTextEntry={true}
+                            placeholderTextColor="black"
+                            errors={errors["password"]}
+                        />
+                        <CustomButton
+                            text="Sign Up"
+                            onPress={() => setFormSubmitted(true)}
+                            style={{ backgroundColor: Colors.green }}
+                        /></>
+                    }
                 </View>
 
             </KeyboardAvoidingView>

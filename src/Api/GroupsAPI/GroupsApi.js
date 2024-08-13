@@ -3,6 +3,7 @@ import url from "../urls";
 
 import * as SecureStore from 'expo-secure-store';
 import { asyncGetItem, asyncSetItem } from "../../../Utility/Cache/Cache";
+import { callWithTimeout } from "../Util/Timeout";
 
 
 export const getGroupsCall = async (overrideCache) => {    
@@ -24,7 +25,7 @@ export const getGroupsCall = async (overrideCache) => {
 const callGroupsApi = async () => {
 
     var token = await SecureStore.getItemAsync("token");
-    const result = await fetch(url.getJoinable,
+    const result = await callWithTimeout(fetch(url.getJoinable,
         {
             method: "GET",
             headers: {
@@ -38,7 +39,7 @@ const callGroupsApi = async () => {
             asyncSetItem("groups", result.clone())
             return result.json();
         }
-    });
+    }));
     return result;
 }
 
@@ -46,7 +47,7 @@ const callGroupsApi = async () => {
 
 export const createGroupCall = async (props) => {
     var token = await SecureStore.getItemAsync("token");
-    const result = await fetch(url.createGroup, 
+    const result = await callWithTimeout(fetch(url.createGroup, 
         {
             method: "POST",
             headers: {
@@ -57,7 +58,7 @@ export const createGroupCall = async (props) => {
             body: JSON.stringify({
                 group: { name: props.title, description: props.description }
             })
-        });
+        }));
 
     return result;
 }
