@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { getFriends, respondFriendRequest } from "../../Api/PeopleAPI/PeopleApi";
-import { View, FlatList, StyleSheet, TouchableOpacity, Text, Image, RefreshControl, SafeAreaView } from "react-native";
+import { getFriends } from "../../Api/PeopleAPI/PeopleApi";
+import { FlatList, StyleSheet, Text, RefreshControl, SafeAreaView } from "react-native";
 
 import LoadScreen from "../Loading/LoadScreen";
 import FriendItem from "../FriendItem";
@@ -29,7 +29,7 @@ const FriendsView = (props) => {
 
         await getFriends(overrideCache)
         .then((result) => {
-            if (result && result.ok) {
+            if (result) {
                 setFriends(result.friends)    
                 setErrors({})
             }

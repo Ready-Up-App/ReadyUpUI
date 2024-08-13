@@ -4,6 +4,7 @@ import url from "../urls";
 import * as SecureStore from 'expo-secure-store';
 import { asyncGetItem, asyncSetItem } from "../../../Utility/Cache/Cache";
 import { callWithTimeout } from "../Util/Timeout";
+import { continuousSignIn } from "../AuthenticationAPI/AuthApi";
 
 
 export const getGroupsCall = async (overrideCache) => {    
@@ -22,7 +23,7 @@ export const getGroupsCall = async (overrideCache) => {
     
 }
 
-const callGroupsApi = async () => {
+const callGroupsApi = async (isRetry) => {
 
     var token = await SecureStore.getItemAsync("token");
     const result = await callWithTimeout(fetch(url.getJoinable,
@@ -38,6 +39,13 @@ const callGroupsApi = async () => {
         if(result.ok) {
             asyncSetItem("groups", result.clone())
             return result.json();
+        } else if (!isRetry && result.status == 401) {
+            console.log("CONTSIGN IN")
+            return continuousSignIn().then((result) => {
+                if (result.ok) {
+                    return callGroupsApi(true)
+                }
+            })
         }
     }));
     return result;
@@ -45,7 +53,7 @@ const callGroupsApi = async () => {
 
 
 
-export const createGroupCall = async (props) => {
+export const createGroupCall = async (props, isRetry) => {
     var token = await SecureStore.getItemAsync("token");
     const result = await callWithTimeout(fetch(url.createGroup, 
         {
@@ -58,7 +66,17 @@ export const createGroupCall = async (props) => {
             body: JSON.stringify({
                 group: { name: props.title, description: props.description }
             })
-        }));
+        }
+    )).then((result) => {
+        if (!isRetry && result.status == 401) {
+            return continuousSignIn().then((result) => {
+                if (result.ok) {
+                    return createGroupCall(props, true)
+                }
+            })
+        }
+        return result.json()
+    });
 
     return result;
 }
