@@ -68,34 +68,33 @@ const GroupsView = ({ style, selectGroup}) => {
             
             {isLoading && <LoadScreen/>}
             {selectedGroup === "" ? 
-            <FlatList 
-                ListHeaderComponent={ 
-                    errors["network"] && <Text style={styles.refreshErrorText}>{errors["network"]}</Text>
-                }
-                style={styles.itemContainer}
-                data={groups}
-                renderItem={({item}) => (
-                    <View style={{flex: 1}}> 
-                        <TouchableOpacity style={styles.items} 
-                        onPress={() => select(item.name)}>
-                            <Text>{item.name}</Text>
-                        </TouchableOpacity>
-                    </View>
-                )}
-                numColumns={1}
-                refreshControl={ 
-                    <RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>
-                }
-                />
+                <FlatList 
+                    ListHeaderComponent={ 
+                        errors["network"] && <Text style={styles.refreshErrorText}>{errors["network"]}</Text>
+                    }
+                    style={styles.itemContainer}
+                    data={groups}
+                    renderItem={({item}) => (
+                        <View style={{flex: 1}}> 
+                            <TouchableOpacity style={styles.items} 
+                            onPress={() => select(item.name)}>
+                                <Text>{item.name}</Text>
+                            </TouchableOpacity>
+                        </View>
+                    )}
+                    numColumns={1}
+                    refreshControl={ 
+                        <RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>
+                    }/>
             :
-            <View>
-                <TouchableOpacity
-                    style={styles.items} 
-                    onPress={() => select("")}>
-                    <Text>BACK</Text>
-                </TouchableOpacity>
-                <Text>{selectedGroup}</Text>
-            </View>
+                <View>
+                    <TouchableOpacity
+                        style={styles.items} 
+                        onPress={() => select("")}>
+                        <Text>BACK</Text>
+                    </TouchableOpacity>
+                    <Text>{selectedGroup}</Text>
+                </View>
             }
         </SafeAreaView>
     );

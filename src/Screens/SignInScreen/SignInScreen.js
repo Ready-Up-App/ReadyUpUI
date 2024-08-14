@@ -106,32 +106,27 @@ const SignInScreen = ({ navigation }) => {
                 </View>
             
                 <View style={styles.inputView}>
-                    
-                    {isLoading ? <LoadScreen/> :
-                      <><SignIn_SignUp_Buttons navigation={navigation} focus={isFocused}/>
-                        
-                        {errors["network"] && <Text style={styles.apiError}>{errors["network"]}</Text>}
-                        <CustomInput
-                            value={form.username}
-                            setValue={handleChange}
-                            placeholder="Username"
-                            placeholderTextColor="black"
-                            errors={errors["username"]}
-                        />
-                        <CustomInput
-                            value={form.password}
-                            setValue={handleChange}
-                            placeholder="Password"
-                            placeholderTextColor="black"
-                            secureTextEntry={true}
-                            errors={errors["password"]}
-                        />
-                        <CustomButton
-                            text="Sign In"
-                            onPress={submitForm}
-                            style={{ backgroundColor: Colors.green }}
-                        />
-                    </>}
+
+                    {isLoading && <LoadScreen/> }
+                    <SignIn_SignUp_Buttons navigation={navigation} focus={isFocused}/>     
+                    {errors["network"] && <Text style={styles.apiError}>{errors["network"]}</Text>}
+                    <CustomInput
+                        value={form.username}
+                        setValue={handleChange}
+                        placeholder="Username"
+                        placeholderTextColor="black"
+                        errors={errors["username"]}/>
+                    <CustomInput
+                        value={form.password}
+                        setValue={handleChange}
+                        placeholder="Password"
+                        placeholderTextColor="black"
+                        secureTextEntry={true}
+                        errors={errors["password"]}/>
+                    <CustomButton
+                        text="Sign In"
+                        onPress={submitForm}
+                        style={{ backgroundColor: Colors.green }}/>
 
                 </View>
             </KeyboardAvoidingView>

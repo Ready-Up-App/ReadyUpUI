@@ -1,22 +1,21 @@
 import { useEffect, useState } from "react";
-import CustomInput from "../CustomInput/CustomInput";
-import { FlatList, View, StyleSheet, Text, TouchableOpacity, KeyboardAvoidingView, Keyboard, SafeAreaView, TextInput } from "react-native";
+import { FlatList, View, StyleSheet, Text, TouchableOpacity, KeyboardAvoidingView, Keyboard, TextInput, Platform } from "react-native";
 import Colors from "../../Constants/Colors";
 import { searchPeople, sendFriendRequest } from "../../Api/PeopleAPI/PeopleApi";
 import LoadScreen from "../Loading/LoadScreen";
+import { validateSearchFriend } from "../../../Utility/FormValidator/FormValidator";
 
 const SearchPeopleView = (props) => {
 
-
-    const [loading, setLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const [username, setUsername] = useState("");
     const [foundPeople, setFoundPeople] = useState([]);
+    const [errors, setErrors] = useState({});
 
     const [formSubmitted, setFormSubmitted] = useState(false);
 
     const handleChange = (val) => {
         setUsername(val);
-        // console.log(val);
     }
 
     const submit = () => {
@@ -24,6 +23,38 @@ const SearchPeopleView = (props) => {
         setFormSubmitted(true)
     }
 
+    const validate = () => {
+        let errorList = validateSearchFriend(username);
+        if (Object.keys(errorList).length > 0) {
+            setErrors(errorList);
+            setFoundPeople([])
+            return false;
+        }
+        setErrors({});
+        return true;
+    }
+
+    const searchPersonCall = async () => {
+        setIsLoading(true);
+        await searchPeople(username)
+        .then((result) => {
+            if(result == null) {
+                return [];
+            }
+            if(!result.ok) {
+                throw new Error("Unknown error occured");
+            }
+            return result.json();
+        }).then((result) => {
+            setFoundPeople(result);
+        }).catch((error) => {
+            setErrors(prev => ({
+                ...prev,
+                network: error.message,
+            }));
+        });
+        setIsLoading(false);
+    }
 
     const handleFriendRequest = (person, index) => {
         sendFriendRequest(person.username)
@@ -35,37 +66,18 @@ const SearchPeopleView = (props) => {
     }
 
     useEffect(() => {
-        let isCancelled = false;
-        if (formSubmitted) {
-            setLoading(true);
-            searchPeople(username)
-            .then((result) => {
-
-                if(result == null) {
-                    return [];
-                }
-                if(!isCancelled && result.ok) {
-                    return result.json();
-                }
-            }).then((result) => {
-                setFoundPeople(result);
-                setFormSubmitted(false);
-                setLoading(false);
-            }).catch((error) => {
-                // console.error(error.message)
-            });
+        if (formSubmitted && validate()) {
+            searchPersonCall();
         } 
-        
-        return () => {
-            isCancelled = true;
-        }
+        setFormSubmitted(false);
     },[formSubmitted])
 
     return (
-        <SafeAreaView style={styles.root}>
+        <KeyboardAvoidingView style={styles.root} 
+            behavior={Platform.OS === "ios" ? "padding" : "height"}>
             <View style={styles.container}>
                 <View style={styles.searchBarRoot}>
-            
+
                     <TextInput 
                         value={username}
                         onChangeText={(text) => handleChange(text)}
@@ -73,8 +85,7 @@ const SearchPeopleView = (props) => {
                         placeholderTextColor={Colors.black}
                         textAlign="center"
                         style={styles.searchField}
-                        autoCapitalize='none'
-                    />
+                        autoCapitalize='none'/>
                     
                     <TouchableOpacity text={"Search"} 
                         onPress={submit}
@@ -82,38 +93,31 @@ const SearchPeopleView = (props) => {
                         <Text>Search</Text>
                     </TouchableOpacity>
                     
-                
                 </View>
+                {errors["username"] && <Text style={styles.errorText}>{errors["username"]}</Text>}
 
-                <View style={{height:"100%"}}>
-                    { 
-                        loading ? <LoadScreen/> :
-                            foundPeople.length == 0 ? 
-                                <Text>NO DATA FOUND</Text>
-                            :
-                                <FlatList style={styles.foundPeopleContainer}
-                                    data={foundPeople}
-                                    renderItem={({item, index}) => (
-                                        <View style={styles.items}> 
-                                            <Text>{item.username}</Text>
-                                            
-                                            <View style={styles.buttonContainer}>
-                                                <TouchableOpacity style={item.available ? styles.friendRequestButton : styles.inactiveButton}
-                                                    onPress={() => handleFriendRequest(item, index)}
-                                                    disabled={item.available ? false : true}
-                                                />
-                                            </View>
-                                        </View>
-                                    )}
-                                    ItemSeparatorComponent={() => <View style={{borderWidth:1}}/>}
-                                    showsHorizontalScrollIndicator={false}
-                                    showsVerticalScrollIndicator={false}
-                                />
-                    }
+                <View >
+                    {isLoading && <LoadScreen/> }
+                    <FlatList style={styles.foundPeopleContainer}
+                        data={foundPeople}
+                        renderItem={({item, index}) => (
+                            <View style={styles.items}> 
+                                <Text style={styles.foundPersonText}>{item.username}</Text>
+                                
+                                <View style={styles.buttonContainer}>
+                                    <TouchableOpacity style={item.available ? styles.friendRequestButton : styles.inactiveButton}
+                                        onPress={() => handleFriendRequest(item, index)}
+                                        disabled={item.available ? false : true}
+                                    />
+                                </View>
+                            </View>
+                        )}
+                        ItemSeparatorComponent={() => <View style={{borderWidth:1}}/>}
+                        showsHorizontalScrollIndicator={false}
+                        showsVerticalScrollIndicator={false}/>
                 </View>
             </View>
-        </SafeAreaView>
-                    
+        </KeyboardAvoidingView>
     );
 }
 
@@ -124,20 +128,17 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.blueGray,
     },
     container: {
-        height: "100%",
-        width: "100%",
         padding: 10
     },
     searchBarRoot: {
-        height: "7%",
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "center",
     },
     searchField: {
-        width: "73%",
-        height: "100%",
-        marginLeft: "2%",
+        width: "80%",
+        paddingVertical: 10,
+        paddingHorizontal: 30,
         backgroundColor: "white",
 
         borderColor: Colors.gray,
@@ -147,8 +148,8 @@ const styles = StyleSheet.create({
         justifyContent: "center",
     },
     searchButton: {
-        width: "21%",
-        height: "100%",
+        paddingVertical: 10,
+        paddingHorizontal: 15,
         marginLeft: "2%",
         backgroundColor: Colors.lightBlueGray,
         alignItems: "center",
@@ -160,7 +161,6 @@ const styles = StyleSheet.create({
     items: {
         flexDirection: "row",
         alignItems: "center",
-
     },
     friendRequestButton : {
         backgroundColor: Colors.blue,
@@ -180,8 +180,15 @@ const styles = StyleSheet.create({
         activeOpacity: 0.5,
     },
     buttonContainer: {
-        flex: 1,
         alignItems: "flex-end",
+    },
+    errorText: {
+        paddingTop: 10,
+        textAlign: "center",
+        color: Colors.red
+    },
+    foundPersonText: {
+        width: "80%"
     }
 })
 
