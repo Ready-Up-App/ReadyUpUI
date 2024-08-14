@@ -1,4 +1,4 @@
-import { SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Platform, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { createGroupCall } from "../../Api/GroupsAPI/GroupsApi";
 import { useEffect, useState } from "react";
 import Colors from "../../Constants/Colors";
@@ -38,7 +38,9 @@ const CreateGroupView = ({navigation}) => {
     },[submitForm])
 
     return (
-        <SafeAreaView style={styles.root}>
+        <SafeAreaView style={styles.root} 
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
+            enabled={false}>
             <View style={styles.container}>
 
                 <View style={styles.textContainer}>
@@ -74,18 +76,15 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.blueGray,
     },
     container: {
-        margin: 25
+        margin: 13
     },
     textContainer: {
         borderTopLeftRadius: 25,
         borderTopRightRadius: 25,
         backgroundColor: Colors.lightBlueGray,
-
     },
     textInput: {
-        // backgroundColor: Colors.lightBlueGray,
         textAlign: "center",
-        // height: "10%",
         paddingVertical: 10,
         borderBottomColor: Colors.black,
         borderBottomWidth: 0.75

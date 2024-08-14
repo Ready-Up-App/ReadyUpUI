@@ -1,6 +1,6 @@
 import url from "../urls";
 import * as SecureStore from 'expo-secure-store';
-import { asyncDeleteItem, asyncGetItem, asyncSetItem } from "../../../Utility/Cache/Cache";
+import { asyncGetItem, asyncSetItem } from "../../../Utility/Cache/Cache";
 import { callWithTimeout } from "../Util/Timeout";
 import { continuousSignIn } from "../AuthenticationAPI/AuthApi";
 
@@ -69,6 +69,7 @@ export const searchPeople = async (username, isRetry) => {
         }
     )).then((result) => {
         if (!isRetry && result.status == 401) {
+            console.log(result)
             return continuousSignIn().then((result) => {
                 if (result.ok) {
                     return searchPeople(username, true)

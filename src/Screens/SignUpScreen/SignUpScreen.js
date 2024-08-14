@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { SafeAreaView, View, StyleSheet, Image, useWindowDimensions, KeyboardAvoidingView, Platform } from "react-native";
+import { Text, SafeAreaView, View, StyleSheet, Image, useWindowDimensions, KeyboardAvoidingView, Platform } from "react-native";
 import * as SecureStore from 'expo-secure-store';
 
 import CustomInput from "../../Components/CustomInput";
@@ -84,7 +84,7 @@ const SignUpScreen = ({ navigation }) => {
         if (formSubmitted && validate()) {
             setIsLoading(true);
             AsyncStorage.clear();
-            signUp()
+            signUp();
         }
         setFormSubmitted(false)
     }, [formSubmitted]);
@@ -101,47 +101,36 @@ const SignUpScreen = ({ navigation }) => {
                 </View>
 
                 <View style={styles.inputView}>
-                    {isLoading ? <LoadScreen/> :
-                        <><SignIn_SignUp_Buttons navigation={navigation} focus={isFocused}/>
-                        <CustomInput
-                            value={form.firstname}
-                            setValue={handleChange}
-                            placeholder="Firstname"
-                            placeholderTextColor="black"
-                            errors={errors["firstname"]}
-                        />
-                        <CustomInput
-                            value={form.email}
-                            setValue={handleChange}
-                            placeholder="Email"
-                            placeholderTextColor="black"
-                            errors={errors["email"]}
-                        />
-                        <CustomInput
-                            value={form.username}
-                            setValue={handleChange}
-                            placeholder="Username"
-                            placeholderTextColor="black"
-                            errors={errors["username"]}
-                        />
-                        <CustomInput
-                            value={form.password}
-                            setValue={handleChange}
-                            placeholder="Password"
-                            secureTextEntry={true}
-                            placeholderTextColor="black"
-                            errors={errors["password"]}
-                        />
-                        <CustomButton
-                            text="Sign Up"
-                            onPress={() => setFormSubmitted(true)}
-                            style={{ backgroundColor: Colors.green }}
-                        /></>
-                    }
+                    {isLoading && <LoadScreen/> }
+                    <SignIn_SignUp_Buttons navigation={navigation} focus={isFocused}/>
+                    {errors["network"] && <Text style={styles.apiError}>{errors["network"]}</Text>}
+                    <CustomInput
+                        value={form.firstname}
+                        setValue={handleChange}
+                        placeholder="Firstname"
+                        errors={errors["firstname"]}/>
+                    <CustomInput
+                        value={form.email}
+                        setValue={handleChange}
+                        placeholder="Email"
+                        errors={errors["email"]}/>
+                    <CustomInput
+                        value={form.username}
+                        setValue={handleChange}
+                        placeholder="Username"
+                        errors={errors["username"]}/>
+                    <CustomInput
+                        value={form.password}
+                        setValue={handleChange}
+                        placeholder="Password"
+                        secureTextEntry={true}
+                        errors={errors["password"]}/>
+                    <CustomButton
+                        text="Sign Up"
+                        onPress={() => setFormSubmitted(true)}
+                        style={{ backgroundColor: Colors.green }}/>
                 </View>
-
             </KeyboardAvoidingView>
-
         </SafeAreaView>
         
     )
@@ -173,6 +162,10 @@ const styles = StyleSheet.create({
         height: 125,
         maxHeight: 125,
         maxWidth: 125,
+    },
+    apiError: {
+        textAlign: "center",
+        color: Colors.red,
     },
 });
 

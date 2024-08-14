@@ -3,7 +3,7 @@ import { View, TextInput, StyleSheet, Text, } from "react-native";
 
 import Colors from "../../Constants/Colors";
 
-const CustomInput = ({ value, setValue, placeholder, secureTextEntry, placeholderTextColor, style, errors}) => {
+const CustomInput = ({ value, setValue, placeholder, secureTextEntry, style, errors}) => {
     return (
         <>
         {errors && <Text style={{color: Colors.red, textAlign: "center"}}>{errors}</Text>}
@@ -12,7 +12,7 @@ const CustomInput = ({ value, setValue, placeholder, secureTextEntry, placeholde
             <TextInput
                 value={value}
                 placeholder={placeholder}
-                placeholderTextColor={placeholderTextColor}
+                placeholderTextColor={Colors.gray}
                 style={styles.input}
                 onChangeText={(val) => setValue(placeholder.toString().toLowerCase(), val)}
                 secureTextEntry={secureTextEntry}
