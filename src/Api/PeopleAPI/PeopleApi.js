@@ -69,7 +69,6 @@ export const searchPeople = async (username, isRetry) => {
         }
     )).then((result) => {
         if (!isRetry && result.status == 401) {
-            console.log(result)
             return continuousSignIn().then((result) => {
                 if (result.ok) {
                     return searchPeople(username, true)

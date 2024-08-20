@@ -40,7 +40,6 @@ const callGroupsApi = async (isRetry) => {
             asyncSetItem("groups", result.clone())
             return result.json();
         } else if (!isRetry && result.status == 401) {
-            console.log("CONTSIGN IN")
             return continuousSignIn().then((result) => {
                 if (result.ok) {
                     return callGroupsApi(true)
@@ -75,8 +74,87 @@ export const createGroupCall = async (props, isRetry) => {
                 }
             })
         }
-        return result.json()
+        return result
     });
 
+    return result;
+}
+
+export const getCurrentGroup = async (isRetry) => {
+    var token = await SecureStore.getItemAsync("token");
+
+    const result = await fetch(url.getCurrentGroup, 
+        {
+            method: "GET",
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + token.toString()
+            }
+        }
+    ).then((result) => {
+        if (!isRetry && result.status == 401) {
+            return continuousSignIn().then((result) => {
+                if (result.ok) {
+                    return getCurrentGroup(true);
+                }
+            })
+        }
+        return result.json()
+    });
+    return result;
+}
+
+
+export const joinGroup = async (groupId, isRetry) => {
+    var token = await SecureStore.getItemAsync("token");
+
+    const result = await fetch(url.joinGroup, 
+        {
+            method: "POST",
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + token.toString()
+            },
+            body: JSON.stringify({
+                groupId: groupId
+            })
+        }
+    ).then((result) => {
+        if (!isRetry && result.status == 401) {
+            return continuousSignIn().then((result) => {
+                if (result.ok) {
+                    return joinGroup(groupId, true);
+                }
+            })
+        }
+        return result
+    });
+    return result;
+}
+
+export const leaveGroup = async (isRetry) => {
+    var token = await SecureStore.getItemAsync("token");
+
+    const result = await fetch(url.leaveGroup, 
+        {
+            method: "GET",
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + token.toString()
+            }
+        }
+    ).then((result) => {
+        if (!isRetry && result.status == 401) {
+            return continuousSignIn().then((result) => {
+                if (result.ok) {
+                    return leaveGroup(true);
+                }
+            })
+        }
+        return result
+    });
     return result;
 }
