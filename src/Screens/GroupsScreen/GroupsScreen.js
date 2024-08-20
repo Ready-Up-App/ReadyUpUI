@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { View, SafeAreaView, StyleSheet, Platform, StatusBar } from "react-native";
 
@@ -8,21 +8,26 @@ import GroupsView from "../../Components/GroupsView/GroupsView";
 import CreateGroupView from "../../Components/CreateGroupView/CreateGroupView";
 
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import CurrentGroupView from "../../Components/CurrentGroupView";
+import { getCurrentGroup } from "../../Api/GroupsAPI/GroupsApi";
 
-const GroupNav = createMaterialTopTabNavigator()
+const InGroupNav = createMaterialTopTabNavigator()
+const OutOfGroupNav = createMaterialTopTabNavigator()
 
 const GroupsScreen = ({navigation}) => {
-            
-    const [selectedGroup, setSelectedGroup] = useState();
-    const [goGroupCreate, setGoGroupCreate] = useState(false);
 
-    const updateSelectedGroup = (group) => {
-        setSelectedGroup(group);
+    const [inGroup, setInGroup] = useState(false)
+
+    const handleUpdate = (value) => {
+        setInGroup(value);
     }
 
-    const navCreateGroup = (val) => {
-        setGoGroupCreate(val)
-    }
+    useEffect(() => {
+
+        getCurrentGroup().then((result) => {
+            setInGroup(result.group != null);
+        });
+    },[])
 
     return (
         <SafeAreaView style={styles.root}
@@ -30,10 +35,24 @@ const GroupsScreen = ({navigation}) => {
             enabled={false}>
 
             <View style={styles.topView}>
-                <GroupNav.Navigator screenOptions={{headerShown: false}} >
-                    <GroupNav.Screen name="JoinableGroups" component={GroupsView} />
-                    <GroupNav.Screen name="CreateGroup" component={CreateGroupView} />
-                </GroupNav.Navigator>
+                
+                {inGroup && 
+                    <InGroupNav.Navigator screenOptions={{headerShown: false}} >
+                        <InGroupNav.Screen name="CurrentGroup">
+                            {(setInGroup) => <CurrentGroupView setInGroup={handleUpdate}/>}
+                        </InGroupNav.Screen>
+                    </InGroupNav.Navigator>}
+
+                {!inGroup &&
+                    <OutOfGroupNav.Navigator>
+                        <OutOfGroupNav.Screen name="JoinableGroups">
+                            {(setInGroup) => <GroupsView setInGroup={handleUpdate}/>}
+                        </OutOfGroupNav.Screen>
+                        <OutOfGroupNav.Screen name="CreateGroup">
+                            {(setInGroup) => <CreateGroupView setInGroup={handleUpdate}/>}
+                        </OutOfGroupNav.Screen>
+                    </OutOfGroupNav.Navigator>}
+            
             </View>
 
         </SafeAreaView>

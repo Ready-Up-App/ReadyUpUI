@@ -2,12 +2,14 @@ import { Platform, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, 
 import { createGroupCall } from "../../Api/GroupsAPI/GroupsApi";
 import { useEffect, useState } from "react";
 import Colors from "../../Constants/Colors";
+import LoadScreen from "../Loading/LoadScreen";
 
 
-const CreateGroupView = ({navigation}) => {
+const CreateGroupView = ({navigation, setInGroup}) => {
 
     const [form, setForm] = useState({title: "", description: ""});
     const [submitForm, setSubmitForm] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     const handleChange = (name, value) => {
         setForm(prev => ({
@@ -17,12 +19,13 @@ const CreateGroupView = ({navigation}) => {
     }
 
     const createGroup = async () => {
+        setIsLoading(true);
         const result = await createGroupCall(form);
-
-        if (result.ok) {
-            navigation.goBack()
-        }
         setSubmitForm(false);
+        setIsLoading(false);
+        if (result.ok) {
+            setInGroup(true);
+        }
     }
 
     useEffect(() => {
@@ -43,6 +46,7 @@ const CreateGroupView = ({navigation}) => {
             enabled={false}>
             <View style={styles.container}>
 
+                {isLoading && <LoadScreen/>}
                 <View style={styles.textContainer}>
                     <TextInput 
                         value={form.title}

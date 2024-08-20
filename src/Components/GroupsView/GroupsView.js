@@ -1,20 +1,20 @@
 import { useEffect, useState } from "react"
 import { View, FlatList, StyleSheet, TouchableOpacity, Text, RefreshControl, SafeAreaView, Platform } from "react-native"
 
-import { getGroupsCall } from "../../Api/GroupsAPI/GroupsApi"
+import { getGroupsCall, joinGroup } from "../../Api/GroupsAPI/GroupsApi"
 import Colors from "../../Constants/Colors"
 
 import LoadScreen from "../Loading/LoadScreen"
 
 
-const GroupsView = ({ style, selectGroup}) => {
+const GroupsView = ({ setInGroup }) => {
 
     const [refreshing, setRefreshing] = useState(false);
     const [groups, setGroups] = useState([]);
 
     const [errors, setErrors] = useState({});
 
-    const [selectedGroup, setSelectedGroup] = useState("");
+    const [selectedGroup, setSelectedGroup] = useState(null);
 
     const [isLoading, setIsLoading] = useState(true);
 
@@ -27,13 +27,22 @@ const GroupsView = ({ style, selectGroup}) => {
     }
 
     const select = (group) => {
-        selectGroup(group);
         setSelectedGroup(group);
+    }
+
+    const joinGroupCall = async (groupId) => {
+        showLoading();
+        const result = await joinGroup(groupId);
+        
+        hideLoading();
+        if (result.ok){ 
+            setInGroup(true)
+        }
     }
 
     const getGroups = async (overrideCache) => {
         showLoading();
-        setSelectedGroup("");
+        setSelectedGroup(null);
         await getGroupsCall(overrideCache)
         .then((groups) => {
             setGroups(groups);
@@ -54,7 +63,6 @@ const GroupsView = ({ style, selectGroup}) => {
     useEffect(() => {
         let isCancelled = false;
         getGroups(true)
-            
         return () => {
             isCancelled = true;
         }
@@ -67,7 +75,7 @@ const GroupsView = ({ style, selectGroup}) => {
             enabled={false}>
             
             {isLoading && <LoadScreen/>}
-            {selectedGroup === "" ? 
+            {selectedGroup === null ? 
                 <FlatList 
                     ListHeaderComponent={ 
                         errors["network"] && <Text style={styles.refreshErrorText}>{errors["network"]}</Text>
@@ -77,7 +85,7 @@ const GroupsView = ({ style, selectGroup}) => {
                     renderItem={({item}) => (
                         <View style={{flex: 1}}> 
                             <TouchableOpacity style={styles.items} 
-                            onPress={() => select(item.name)}>
+                            onPress={() => select(item)}>
                                 <Text>{item.name}</Text>
                             </TouchableOpacity>
                         </View>
@@ -87,13 +95,30 @@ const GroupsView = ({ style, selectGroup}) => {
                         <RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>
                     }/>
             :
-                <View>
+                <View style={styles.selectedGroupContainer}>
                     <TouchableOpacity
                         style={styles.items} 
-                        onPress={() => select("")}>
+                        onPress={() => select(null)}>
                         <Text>BACK</Text>
                     </TouchableOpacity>
-                    <Text>{selectedGroup}</Text>
+                    {selectedGroup && selectedGroup.name && <Text>{selectedGroup.name}</Text> }
+                    {selectedGroup && selectedGroup.description && <Text>{selectedGroup.description}</Text> }
+                    {selectedGroup && selectedGroup.attendees &&  
+                    <FlatList
+                        style={styles.itemContainer}
+                        data={selectedGroup.attendees}
+                        renderItem={({item}) => (
+                            <View style={styles.items}> 
+                                <Text>{item.firstname}</Text>
+                            </View>
+                        )}
+                        numColumns={5}
+                    />}
+                    {selectedGroup && 
+                        <TouchableOpacity style={styles.joinGroupButton}
+                            onPress={() => joinGroupCall(selectedGroup.id)}>
+                            <Text>Join group</Text>
+                        </TouchableOpacity>}
                 </View>
             }
         </SafeAreaView>
@@ -110,14 +135,18 @@ const styles = StyleSheet.create({
         padding: 10,
         
     },
-    items: {
-        borderRadius: 10,
-        borderColor: Colors.black,
-        borderWidth: 1,
-        margin: 10,
+    selectedGroupContainer: {
         padding: 10,
+        backgroundColor: Colors.gray
+    },
+    items: {
+            borderRadius: 10,
+            borderColor: Colors.black,
+            borderWidth: 1,
+            margin: 10,
+            padding: 10,
 
-        backgroundColor: Colors.lightBlueGray
+            backgroundColor: Colors.lightBlueGray
     },
     button: {
         flex: 1
@@ -125,6 +154,9 @@ const styles = StyleSheet.create({
     refreshErrorText: {
         textAlign: "center",
         color: Colors.gray,
+    },
+    joinGroupButton: {
+        backgroundColor: Colors.lightBlueGray
     },
 });
 

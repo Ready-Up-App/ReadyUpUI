@@ -19,6 +19,9 @@ const url = {
 
     getJoinable: endpoints.groups + "/getJoinable",
     createGroup: endpoints.groups + "/create",
+    getCurrentGroup: endpoints.groups + "/getGroupFor",
+    joinGroup: endpoints.groups + "/joinGroup",
+    leaveGroup: endpoints.groups + "/leaveGroup",
 
     getFriends: endpoints.person + "/getFriends",
     searchPerson: endpoints.person + "/searchUsername",
