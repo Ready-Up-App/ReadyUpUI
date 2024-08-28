@@ -27,6 +27,7 @@ const url = {
     searchPerson: endpoints.person + "/searchUsername",
     sendFriendRequest: endpoints.person + "/friendRequest",
     respondFriendRequest: endpoints.person + "/respondFriendRequest",
+    setReadyStatus: endpoints.person + "/setReadyStatus",
 
     getPushToken: endpoints.notification + "/getToken",
     setPushToken: endpoints.notification + "/setToken",
