@@ -1,21 +1,26 @@
 import { useEffect, useState } from "react";
-import { FlatList, View, SafeAreaView, StyleSheet, Text, TouchableOpacity } from "react-native";
+import { FlatList, View, SafeAreaView, StyleSheet, Text, TouchableOpacity, ScrollView } from "react-native";
 import { getCurrentGroup, leaveGroup } from "../../Api/GroupsAPI/GroupsApi";
 import Colors from "../../Constants/Colors";
 import LoadScreen from "../Loading/LoadScreen";
+import * as SecureStore from 'expo-secure-store';
+import { setReadyStatus } from "../../Api/PeopleAPI/PeopleApi";
 
 
 const CurrentGroupView = ({setInGroup}) => {
     const [isLoading, setIsLoading] = useState(false);
     const [currentGroup, setCurrentGroup] = useState();
+    const [groupedUser, setGroupedUser] = useState();
     const [refreshing, setRefreshing] = useState(false);
 
     const getCurrentGroupCall = async () => {
         setIsLoading(true);
-        await getCurrentGroup()
-        .then((result) => {
-            setCurrentGroup(result.group);
-        });
+        const result = await getCurrentGroup();
+        setCurrentGroup(result.group);
+
+        let username = await SecureStore.getItemAsync("username");
+
+        setGroupedUser(result.group.attendees.find((person) => {return person.username === username}));
         setIsLoading(false);
     }
     
@@ -28,46 +33,73 @@ const CurrentGroupView = ({setInGroup}) => {
         setIsLoading(false);
     }
 
+    const setReadyStatusCall = async () => {
+        setIsLoading(true);
+        const result = await setReadyStatus(!groupedUser.readyStatus);
+        if (result.ok) {
+            setGroupedUser(prev => ({
+                ...prev,
+                readyStatus: !prev.readyStatus,
+            })) 
+        }
+        setIsLoading(false);
+    }
     const onRefresh = () => {
         getCurrentGroupCall();
     }
+
     useEffect(() => {
         getCurrentGroupCall();
     },[]);
+    console.log(groupedUser)
 
     return (
 
         <SafeAreaView style={styles.root}>
             {isLoading && <LoadScreen/> }
-            <View style={styles.container} >
-                <View style={styles.groupContainer}>
-                    <Text style={{textAlign: "center"}}>Title</Text>
-                    {currentGroup && <Text style={styles.groupTitleText}>{currentGroup.name}</Text>}
-                    <Text style={{textAlign: "center"}}>Description</Text>
-                    {currentGroup && <Text style={styles.groupTitleText}>{currentGroup.description}</Text>}
-                    {currentGroup && 
-                        <FlatList
-                            style={styles.membersContainer}
-                            data={currentGroup.attendees}
-                            renderItem={({item}) => (
-                                <View style={styles.member}> 
-                                    <Text>{item.firstname}</Text>
-                                </View>
-                            )}
-                            numColumns={5}
-                            ListHeaderComponent={<Text style={{textAlign:"center"}}>Attendees</Text>}
-                        />
+            
+            {currentGroup && 
+                <><FlatList
+                    style={styles.membersContainer}
+                    data={currentGroup.attendees}
+                    renderItem={({item}) => (
+                            <View style={[styles.member, {backgroundColor: item.readyStatus ? Colors.green: Colors.red}]}> 
+                                <Text>{item.firstname}</Text>
+                            </View>
+                    )}
+                    numColumns={5}
+                    contentContainerStyle={styles.container}
+                    ListHeaderComponent={
+                        <View >
+                            <Text style={{textAlign: "center"}}>Title</Text>
+                            {currentGroup && <Text style={styles.groupTitleText}>{currentGroup.name}</Text>}
+                            <Text style={{textAlign: "center"}}>Description</Text>
+                            {currentGroup && <Text style={styles.groupTitleText}>{currentGroup.description}</Text>}
+                            <Text style={{textAlign:"center"}}>Attendees</Text> 
+                        </View>
                     }
-
-                    {currentGroup && <TouchableOpacity style={{padding: 10}} onPress={() => leaveGroupCall()}><Text>Leave Group</Text></TouchableOpacity>}
-                </View>
-                <TouchableOpacity style={styles.readyButtonContainer}>
-                    <Text style={styles.readyupText}>Ready</Text>
+                    ListFooterComponent={
+                        groupedUser && 
+                        <TouchableOpacity style={groupedUser.readyStatus ? styles.notReadyButtonContainer : styles.readyButtonContainer}
+                            onPress={setReadyStatusCall}>
+                            {!groupedUser.readyStatus ?  
+                                <Text style={styles.readyupText}>Ready</Text> 
+                            :
+                                <Text style={styles.readyupText}>UnReady</Text>     
+                            }
+                        </TouchableOpacity>
+                    }
+                />
+                
+                <TouchableOpacity style={styles.leaveGroupButton} onPress={() => leaveGroupCall()}>
+                    <Text>Leave Group</Text>
                 </TouchableOpacity>
-            </View>
+                </>
+            }
         </SafeAreaView>
     );
 }
+
 
 const styles = StyleSheet.create({
     root: {
@@ -75,8 +107,10 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.blueGray,
     },
     container: {
-        flex: 1,
-        margin: 10
+        margin: 10,
+        backgroundColor: Colors.black,
+        borderRadius: 25,
+        // flex:1,
     },
     groupContainer: {
         flex : 3,
@@ -88,6 +122,15 @@ const styles = StyleSheet.create({
     readyButtonContainer: {
         flex: 1,
         backgroundColor: Colors.green,
+        justifyContent: "center",
+        alignContent: "center",
+        alignItems: "center",
+        borderBottomLeftRadius: 25,
+        borderBottomRightRadius: 25,
+    },
+    notReadyButtonContainer: {
+        flex: 1,
+        backgroundColor: Colors.red,
         justifyContent: "center",
         alignContent: "center",
         alignItems: "center",
@@ -114,6 +157,12 @@ const styles = StyleSheet.create({
     },
     memberSeparator: {
         borderWidth: 1
+    },
+    leaveGroupButton: {
+        // flex: 1,
+        padding: 10,
+        margin: 20,
+        backgroundColor: Colors.red,
     }
 })
 

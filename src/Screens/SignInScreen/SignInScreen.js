@@ -38,7 +38,6 @@ const SignInScreen = ({ navigation }) => {
             await SecureStore.setItemAsync("username", form.username, options);
             await SecureStore.setItemAsync("password", form.password, options);
             await SecureStore.setItemAsync("token", token, options);
-            console.log("signIn token: ", token)
         }
     }
 

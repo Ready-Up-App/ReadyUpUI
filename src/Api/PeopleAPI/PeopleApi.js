@@ -138,3 +138,32 @@ export const respondFriendRequest = async (username, isAccepted, isRetry) => {
     });
     return result;
 }
+
+
+export const setReadyStatus = async (status, isRetry) => {
+    var token = await SecureStore.getItemAsync("token");
+    console.log("test")
+    const result = await fetch(url.setReadyStatus,
+        {
+            method: "POST",
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + token.toString()
+            },
+            body: JSON.stringify({
+                status: status
+            })
+        }
+    ).then((result) => {
+        if (!isRetry && result.status == 401) {
+            return continuousSignIn().then((result) => {
+                if (result.ok) {
+                    return setReadyStatus(status, true)
+                }
+            })
+        }
+        return result;
+    });
+    return result;
+}
